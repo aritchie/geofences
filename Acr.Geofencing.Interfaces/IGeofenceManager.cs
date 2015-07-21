@@ -7,6 +7,7 @@ namespace Acr.Geofencing {
 
     public interface IGeofenceManager {
 
+        // TODO: priority
         Task<bool> Initialize();
 
         event EventHandler<GeofenceRegion> Entered;
@@ -18,22 +19,3 @@ namespace Acr.Geofencing {
         void StopAllMonitoring();
     }
 }
-/*
- //Set the Priority for the Geofence Tracking Location Accuracy
-    public static GeofencePriority GeofencePriority { get; set; }
-
-    //Set the smallest displacement should be done from current location before a location update
-    public static float SmallestDisplacement { get; set; }
-
-
-              bool retVal = false;
-          RequestAlwaysAuthorization();
-
-
-          if (!CLLocationManager.LocationServicesEnabled)
-          else if (CLLocationManager.Status == CLAuthorizationStatus.Denied || CLLocationManager.Status == CLAuthorizationStatus.Restricted)
-          else if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
-          /... good
-          else
-          ...
-*/
