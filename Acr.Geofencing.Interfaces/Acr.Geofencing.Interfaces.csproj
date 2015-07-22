@@ -39,6 +39,8 @@
     </Compile>
     <Compile Include="AbstractGeofenceManagerImpl.cs" />
     <Compile Include="GeofenceRegion.cs" />
+    <Compile Include="GeofenceStatusChangedArgs.cs" />
+    <Compile Include="GeofenceStatus.cs" />
     <Compile Include="IGeofenceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

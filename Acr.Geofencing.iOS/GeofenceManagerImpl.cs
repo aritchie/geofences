@@ -18,7 +18,7 @@ namespace Acr.Geofencing {
                     return;
 
                 var region = this.FromNative(native);
-                this.OnEnteredRegion(region);
+                this.OnRegionStatusChanged(region, GeofenceStatus.Entered);
             };
             this.locationManager.RegionLeft += (sender, args) => {
                 var native = args.Region as CLCircularRegion;
@@ -26,9 +26,9 @@ namespace Acr.Geofencing {
                     return;
 
                 var region = this.FromNative(native);
-                this.OnExitedRegion(region);
+                // TODO: stay duration?
+                this.OnRegionStatusChanged(region, GeofenceStatus.Exited);
             };
-
             //this.locationManager.DesiredAccuracy = CLLocation.AccuracyNearestTenMeters; // TODO: configurable
         }
 

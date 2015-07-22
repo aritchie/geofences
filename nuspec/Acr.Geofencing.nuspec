@@ -30,5 +30,13 @@ Initial Commit
         <!-- ios -->
         <file src="..\src\Acr.Geofencing.iOS\bin\iPhone\Release\Acr.Geofencing.dll" target="lib\Xamarin.iOS10\Acr.Geofencing.dll" />
         <file src="..\src\Acr.Geofencing.iOS\bin\iPhone\Release\Acr.Geofencing.Interface.dll" target="lib\Xamarin.iOS10\Acr.Geofencing.Interface.dll" />
+
+        <!-- wp81 -->
+        <file src="..\src\Acr.Geofencing.Windows\bin\Release\Acr.Geofencing.dll" target="lib\wpa81\Acr.Geofencing.dll" />
+        <file src="..\src\Acr.Geofencing.Windows\bin\Release\Acr.Geofencing.Interface.dll" target="lib\wpa81\Acr.Geofencing.Interface.dll" />
+
+        <!--win8-->
+        <file src="..\src\Acr.Geofencing.Windows\bin\Release\Acr.Geofencing.dll" target="lib\win8\Acr.Geofencing.dll" />
+        <file src="..\src\Acr.Geofencing.Windows\bin\Release\Acr.Geofencing.Interface.dll" target="lib\win8\Acr.Geofencing.Interface.dll" />
     </files>
 </package>

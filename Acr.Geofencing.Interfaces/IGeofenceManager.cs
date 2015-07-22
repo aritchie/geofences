@@ -10,8 +10,7 @@ namespace Acr.Geofencing {
         // TODO: priority
         Task<bool> Initialize();
 
-        event EventHandler<GeofenceRegion> Entered;
-        event EventHandler<GeofenceRegion> Exited;
+        event EventHandler<GeofenceStatusChangedArgs> RegionStatusChanged;
 
         IReadOnlyList<GeofenceRegion> MonitoredRegions { get; }
         void StartMonitoring(GeofenceRegion region);

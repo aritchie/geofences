@@ -5,8 +5,12 @@ namespace Acr.Geofencing {
 
     public class GeofenceRegion {
 
-        public GeofenceRegion() { }
-        public GeofenceRegion(string identifier, double latitude, double longitude, double radius) {
+        public GeofenceRegion() {
+            this.StayThreshold = TimeSpan.FromMinutes(2);
+        }
+
+
+        public GeofenceRegion(string identifier, double latitude, double longitude, double radius) : this() {
             this.Identifier = identifier;
             this.Latitude = latitude;
             this.Longitude = longitude;
@@ -18,11 +22,11 @@ namespace Acr.Geofencing {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double Radius { get; set; }
-        public TimeSpan? StayThreshold { get; set; }
+        public TimeSpan StayThreshold { get; set; }
 
 
         public override bool Equals(object obj) {
-            return base.Equals(obj);
+            return this.Identifier.Equals(obj);
         }
 
 

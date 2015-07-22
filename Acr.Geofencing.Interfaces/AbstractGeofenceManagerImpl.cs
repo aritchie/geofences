@@ -19,8 +19,7 @@ namespace Acr.Geofencing {
         }
 
 
-        public event EventHandler<GeofenceRegion> Entered;
-        public event EventHandler<GeofenceRegion> Exited;
+        public event EventHandler<GeofenceStatusChangedArgs> RegionStatusChanged;
         public IReadOnlyList<GeofenceRegion> MonitoredRegions { get; private set; }
 
         public abstract Task<bool> Initialize();
@@ -45,13 +44,8 @@ namespace Acr.Geofencing {
         }
 
 
-        protected virtual void OnEnteredRegion(GeofenceRegion region) {
-            this.Entered?.Invoke(this, region);
-        }
-
-
-        protected virtual void OnExitedRegion(GeofenceRegion region) {
-            this.Exited?.Invoke(this, region);
+        protected virtual void OnRegionStatusChanged(GeofenceRegion region, GeofenceStatus status) {
+            this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedArgs(region, status));
         }
 
 
