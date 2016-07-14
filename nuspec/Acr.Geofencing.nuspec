@@ -17,7 +17,6 @@ Initial Commit
         <dependencies>
             <group targetFramework="MonoAndroid10">
                 <dependency id="GeoCoordinate" version="[1.1, 2)" />
-                <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
                 <dependency id="Acr.Settings" version="[5.12, 6)" />
             </group>
         </dependencies>
