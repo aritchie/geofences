@@ -16,7 +16,6 @@ namespace Acr.Geofencing {
 
         private readonly LocationManager locationManager;
         private readonly GoogleApiClientCallbacks callbacks;
-        private readonly IGoogleApiClient googleApi;
 
 
         public GeofenceManagerImpl() {
