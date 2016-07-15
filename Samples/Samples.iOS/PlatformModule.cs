@@ -2,7 +2,7 @@
 using Autofac;
 
 
-namespace Samples.Droid
+namespace Samples.iOS
 {
     public class PlatformModule : Module
     {
@@ -13,7 +13,7 @@ namespace Samples.Droid
 
             builder
                 .Register(x => new SampleDbConnection(
-                    new SQLitePlatformIOS(),
+                    new SQLitePlatformAndroid(),
                     Environment.GetFolderPath(Environment.SpecialFolder.Personal)
                 ))
                 .AsSelf()
