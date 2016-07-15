@@ -1,9 +1,9 @@
 ﻿using System;
 
 
-namespace Acr.Geofencing 
+namespace Acr.Geofencing
 {
-    public class GeofenceRegion 
+    public class GeofenceRegion
     {
         public string Identifier { get; set; }
         public double Latitude { get; set; }
@@ -11,13 +11,13 @@ namespace Acr.Geofencing
         public double Radius { get; set; }
 
 
-        public override bool Equals(object obj) 
+        public override bool Equals(object obj)
         {
             return this.Identifier.Equals(obj);
         }
 
 
-        public override int GetHashCode() 
+        public override int GetHashCode()
         {
             return this.Identifier.GetHashCode();
         }

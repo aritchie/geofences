@@ -1,90 +1,84 @@
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive.Linq;
 using CoreLocation;
-using UIKit;
 
 
-namespace Acr.Geofencing 
+namespace Acr.Geofencing
 {
 
-    public class GeofenceManagerImpl : AbstractGeofenceManagerImpl 
+    public class GeofenceManagerImpl : IGeofenceManager
     {
         readonly CLLocationManager locationManager;
 
 
-        public GeofenceManagerImpl() 
+        public GeofenceManagerImpl()
         {
             this.locationManager = new CLLocationManager();
-            //this.locationManager.RegionEntered += (sender, args) => {
-            //    var native = args.Region as CLCircularRegion;
-            //    if (native == null)
-            //        return;
-
-            //    var region = this.FromNative(native);
-            //    this.OnRegionStatusChanged(region, GeofenceStatus.Entered);
-            //};
-            //this.locationManager.RegionLeft += (sender, args) => {
-            //    var native = args.Region as CLCircularRegion;
-            //    if (native == null)
-            //        return;
-
-            //    var region = this.FromNative(native);
-            //    // TODO: stay duration?
-            //    this.OnRegionStatusChanged(region, GeofenceStatus.Exited);
-            //};
-            //this.locationManager.DesiredAccuracy = CLLocation.AccuracyNearestTenMeters; // TODO: configurable
         }
 
 
-   //     public override async Task<bool> Initialize() {
-   //         if (!UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
-   //             return false;
-
-			//var good = false;
-			//var authStatus = CLLocationManager.Status;
-
-			//if (authStatus != CLAuthorizationStatus.NotDetermined)
-			//	good = this.IsGoodStatus(authStatus);
-
-			//else {
-			//	var tcs = new TaskCompletionSource<bool>();
-			//	var funcPnt = new EventHandler<CLAuthorizationChangedEventArgs>((sender, args) => {
-			//		if (args.Status == CLAuthorizationStatus.NotDetermined)
-			//			return; // not done yet
-
-			//		var status = this.IsGoodStatus(args.Status);
-			//		tcs.TrySetResult(status);
-			//    });
-			//	this.locationManager.AuthorizationChanged += funcPnt;
-			//	this.locationManager.RequestAlwaysAuthorization();
-			//	good = await tcs.Task;
-			//	this.locationManager.AuthorizationChanged -= funcPnt;
-			//}
-			//return good;
-   //     }
-        public override IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
+        public IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
         {
-            throw new NotImplementedException();
+            return Observable.Create<GeofenceStatusEvent>(ob =>
+            {
+                var enterHandler = new EventHandler<CLRegionEventArgs>((sender, args) =>
+                {
+                    var native = args.Region as CLCircularRegion;
+                    if (native == null)
+                        return;
+
+                    var region = this.FromNative(native);
+                    ob.OnNext(new GeofenceStatusEvent(region, GeofenceStatus.Entered));
+                });
+                var leftHandler = new EventHandler<CLRegionEventArgs>((sender, args) =>
+                {
+                    var native = args.Region as CLCircularRegion;
+                    if (native == null)
+                        return;
+
+                    var region = this.FromNative(native);
+                    ob.OnNext(new GeofenceStatusEvent(region, GeofenceStatus.Exited));
+                });
+                this.locationManager.RegionEntered += enterHandler;
+                this.locationManager.RegionLeft += leftHandler;
+
+                return () =>
+                {
+                    this.locationManager.RegionEntered += enterHandler;
+                    this.locationManager.RegionLeft += leftHandler;
+                };
+            });
         }
 
-
-        protected override void StartMonitoringNative(GeofenceRegion region) 
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions => new ReadOnlyCollection<GeofenceRegion>(new List<GeofenceRegion>());
+        //this.locationManager
+        //    .MonitoredRegions
+        //    .Where(x => x.)
+        public void StartMonitoring(GeofenceRegion region)
         {
             var native = this.ToNative(region);
             this.locationManager.StartMonitoring(native); // TODO: accuracy?
-            base.StartMonitoring(region);
         }
 
 
-        protected override void StopMonitoringNative(GeofenceRegion region) 
+        public void StopMonitoring(GeofenceRegion region)
         {
             var native = this.ToNative(region);
             this.locationManager.StartMonitoring(native);
-            base.StopMonitoring(region);
         }
 
 
-        protected virtual GeofenceRegion FromNative(CLCircularRegion native) 
+        public void StopAllMonitoring()
+        {
+            // TODO: get native monitors and remove
+        }
+
+
+
+        protected virtual GeofenceRegion FromNative(CLCircularRegion native)
         {
             return new GeofenceRegion
             {
@@ -96,7 +90,7 @@ namespace Acr.Geofencing
         }
 
 
-        protected virtual CLCircularRegion ToNative(GeofenceRegion region) 
+        protected virtual CLCircularRegion ToNative(GeofenceRegion region)
         {
             var center = new CLLocationCoordinate2D(region.Latitude, region.Longitude);
             return new CLCircularRegion(center, region.Radius, region.Identifier);

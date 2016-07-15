@@ -6,33 +6,33 @@ using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 
 
-namespace Acr.Geofencing 
+namespace Acr.Geofencing
 {
 
-    public class GeofenceManagerImpl : AbstractGeofenceManagerImpl 
+    public class GeofenceManagerImpl : IGeofenceManager
     {
         readonly IGeolocator geolocator;
         readonly IDictionary<string, GeofenceState> states;
         readonly IObservable<GeofenceStatusEvent> observe;
         GeoCoordinate current;
 
-        public GeofenceManagerImpl(IGeolocator geolocator = null) 
+        public GeofenceManagerImpl(IGeolocator geolocator = null)
         {
             this.geolocator = geolocator ?? CrossGeolocator.Current;
             this.states = new Dictionary<string, GeofenceState>();
 
             this.observe = Observable
-                .Create<GeofenceStatusEvent>(async ob => 
+                .Create<GeofenceStatusEvent>(async ob =>
                 {
-                    var handler = new EventHandler<PositionEventArgs>((sender, args) => 
+                    var handler = new EventHandler<PositionEventArgs>((sender, args) =>
                     {
                         this.current = new GeoCoordinate(args.Position.Latitude, args.Position.Longitude);
                         this.UpdateFences(ob, args.Position.Latitude, args.Position.Longitude);
                     });
-                
+
                     this.geolocator.PositionChanged += null;
                     await this.geolocator.StartListeningAsync(1, 10, false);
-                    return () => 
+                    return () =>
                     {
                         this.geolocator.StopListeningAsync();
                         this.geolocator.PositionChanged -= null;
@@ -52,7 +52,7 @@ namespace Acr.Geofencing
         protected override void StartMonitoringNative(GeofenceRegion region)
         {
             var state = new GeofenceState(region);
-            if (this.current != null) 
+            if (this.current != null)
             {
                 var inside = this.IsInsideFence(this.current.Latitude, this.current.Longitude, state);
                 state.Status = inside ? GeofenceStatus.Entered : GeofenceStatus.Exited;
@@ -68,7 +68,7 @@ namespace Acr.Geofencing
         }
 
 
-        bool IsInsideFence(double lat, double lng, GeofenceState state) 
+        bool IsInsideFence(double lat, double lng, GeofenceState state)
         {
             var distance = state.Coordinate.GetDistanceTo(new GeoCoordinate(lat, lng));
             var inside = state.Region.Radius < distance;
@@ -76,24 +76,37 @@ namespace Acr.Geofencing
         }
 
 
-        void UpdateFences(IObserver<GeofenceStatusEvent> ob, double lat, double lng) 
+        void UpdateFences(IObserver<GeofenceStatusEvent> ob, double lat, double lng)
         {
-            foreach (var fence in this.states.Values) 
+            foreach (var fence in this.states.Values)
             {
                 var newState = this.IsInsideFence(lat, lng, fence);
                 var status = newState ? GeofenceStatus.Entered : GeofenceStatus.Exited;
 
-                if (fence.Status == GeofenceStatus.Unknown) 
+                if (fence.Status == GeofenceStatus.Unknown)
                 {
                     // status being set for first time as we didn't have current coordinates
                     fence.Status = status;
                 }
-                else 
+                else
                 {
                     fence.Status = status;
                     ob.OnNext(new GeofenceStatusEvent(fence.Region, status));
                 }
             }
+        }
+
+
+        void AssertValidGeofenceRegion(GeofenceRegion region)
+        {
+            if (String.IsNullOrWhitespace(region.Identifier))
+                throw new ArgumentException("No identifier set");
+
+            if (region.Latitude < -90 || region.Latitude > 90)
+                throw new ArgumentException($"Invalid latitude value - {region.Latitude}");
+
+            if (region.Longitude < -180 || region.Longitude > 180)
+                throw new ArgumentException($"Invalid longitude value - {region.Longitude}");
         }
     }
 }
