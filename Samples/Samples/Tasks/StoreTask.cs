@@ -1,6 +1,7 @@
 ﻿using System;
 using Acr.Geofencing;
 using Autofac;
+using Samples.Models;
 
 
 namespace Samples.Tasks
@@ -20,6 +21,14 @@ namespace Samples.Tasks
 
         public void Start()
         {
+            this.geofences
+                .WhenRegionStatusChanged()
+                .Subscribe(x => this.conn.Insert(new GeofenceEvent
+                {
+                    Identifier = x.Region.Identifier,
+                    Status = x.Status,
+                    DateCreatedUtc = DateTime.UtcNow
+                }));
         }
     }
 }

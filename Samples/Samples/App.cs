@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autofac;
 using Samples.Pages;
 using Xamarin.Forms;
@@ -21,24 +23,19 @@ namespace Samples
         }
 
 
-        //protected override async void OnStart() {
-        //    var gi = Geofences.Instance;
-        //    var result = await gi.Initialize();
-        //    if (!result)
-        //        return;
-
-        //    gi.StopAllMonitoring();
-        //    gi.StartMonitoring(new GeofenceRegion("angus", 1, 1, 400));
-        //    gi.RegionStatusChanged += this.OnRegionStatusChanged;
-        //}
+        protected override void OnResume()
+        {
+            base.OnResume();
+            foreach (var lifecycle in this.container.Resolve<IEnumerable<IAppLifecycle>>())
+                lifecycle.OnAppResume();
+        }
 
 
-        //private void OnRegionStatusChanged(object sender, GeofenceStatusChangedArgs e) {
-        //    Data.Insert(new RegionEvent {
-        //        Identifer = e.Region.Identifier,
-        //        Status = e.Status,
-        //        DateCreated = DateTime.Now
-        //    });
-        //}
+        protected override void OnSleep()
+        {
+            base.OnSleep();
+            foreach (var lifecycle in this.container.Resolve<IEnumerable<IAppLifecycle>>())
+                lifecycle.OnAppSleep();
+        }
     }
 }

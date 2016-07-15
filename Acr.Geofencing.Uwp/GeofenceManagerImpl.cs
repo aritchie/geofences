@@ -1,47 +1,54 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Geolocation.Geofencing;
 using WinFence = Windows.Devices.Geolocation.Geofencing.GeofenceMonitor;
 
 
-namespace Acr.Geofencing.Windows {
+namespace Acr.Geofencing
+{
 
-    public class GeofenceManagerImpl : AbstractGeofenceManagerImpl {
+    public class GeofenceManagerImpl : IGeofenceManager
+    {
+        public IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
+        {
+            throw new NotImplementedException();
+        }
 
-        public override async Task<bool> Initialize() {
-            WinFence.Current.GeofenceStateChanged += this.OnGeofenceStateChanged;
-            return true;
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions { get; }
+
+        public void StartMonitoring(GeofenceRegion region)
+        {
         }
 
 
-        public override void StartMonitoring(GeofenceRegion region) {
-            base.StartMonitoring(region);
-            var position = new BasicGeoposition {
+        public void StopMonitoring(GeofenceRegion region)
+        {
+            var position = new BasicGeoposition
+            {
                 Latitude = region.Latitude,
                 Longitude = region.Longitude
             };
             var circle = new Geocircle(position, region.Radius);
-            var fence = new Geofence(region.Identifier, circle, MonitoredGeofenceStates.Entered | MonitoredGeofenceStates.Exited, false, region.StayThreshold);
+            var fence = new Geofence(
+                region.Identifier,
+                circle,
+                MonitoredGeofenceStates.Entered | MonitoredGeofenceStates.Exited,
+                false
+            );
             WinFence.Current.Geofences.Add(fence);
-        }
-
-
-        public override void StopMonitoring(GeofenceRegion region) {
-            base.StopMonitoring(region);
-
             //WinFence.Current.Geofences.Remove();
         }
 
 
-        public override void StopAllMonitoring() {
-            base.StopAllMonitoring();
+        public void StopAllMonitoring()
+        {
             WinFence.Current.Geofences.Clear();
         }
 
 
-        protected virtual void OnGeofenceStateChanged(WinFence sender, object args) {
-
+        protected virtual void OnGeofenceStateChanged(WinFence sender, object args)
+        {
         }
     }
 }

@@ -8,13 +8,13 @@ using Plugin.Geolocator.Abstractions;
 
 namespace Acr.Geofencing
 {
-
     public class GeofenceManagerImpl : IGeofenceManager
     {
         readonly IGeolocator geolocator;
         readonly IDictionary<string, GeofenceState> states;
         readonly IObservable<GeofenceStatusEvent> observe;
         GeoCoordinate current;
+
 
         public GeofenceManagerImpl(IGeolocator geolocator = null)
         {
@@ -30,12 +30,12 @@ namespace Acr.Geofencing
                         this.UpdateFences(ob, args.Position.Latitude, args.Position.Longitude);
                     });
 
-                    this.geolocator.PositionChanged += null;
+                    this.geolocator.PositionChanged += handler;
                     await this.geolocator.StartListeningAsync(1, 10, false);
                     return () =>
                     {
                         this.geolocator.StopListeningAsync();
-                        this.geolocator.PositionChanged -= null;
+                        this.geolocator.PositionChanged -= handler;
                     };
                 })
                 .Publish()
@@ -43,13 +43,13 @@ namespace Acr.Geofencing
         }
 
 
-        public override IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
+        public IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
         {
             return this.observe;
         }
 
-
-        protected override void StartMonitoringNative(GeofenceRegion region)
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions { get; }
+        public void StartMonitoring(GeofenceRegion region)
         {
             var state = new GeofenceState(region);
             if (this.current != null)
@@ -58,13 +58,18 @@ namespace Acr.Geofencing
                 state.Status = inside ? GeofenceStatus.Entered : GeofenceStatus.Exited;
             }
 
-            this.states.Add(region.Identifier, null);
+            this.states.Add(region.Identifier, state);
         }
 
 
-        protected override void StopMonitoringNative(GeofenceRegion region)
+        public void StopMonitoring(GeofenceRegion region)
         {
             this.states.Remove(region.Identifier);
+        }
+
+
+        public void StopAllMonitoring()
+        {
         }
 
 
@@ -99,7 +104,7 @@ namespace Acr.Geofencing
 
         void AssertValidGeofenceRegion(GeofenceRegion region)
         {
-            if (String.IsNullOrWhitespace(region.Identifier))
+            if (String.IsNullOrWhiteSpace(region.Identifier))
                 throw new ArgumentException("No identifier set");
 
             if (region.Latitude < -90 || region.Latitude > 90)

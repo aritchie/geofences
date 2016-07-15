@@ -20,9 +20,9 @@
 
         <NavigationPage>
             <x:Arguments>
-                <ContentPage Title="" BindingContext="{Binding}">
+                <ContentPage Title="{Binding List}" BindingContext="{Binding}">
                     <ContentPage.ToolbarItems>
-                        <ToolbarItem Text="" Command="{Binding}" />
+                        <ToolbarItem Text="Stop All" Command="{Binding}" />
                     </ContentPage.ToolbarItems>
 
                     <ContentPage.Content>

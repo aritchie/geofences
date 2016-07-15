@@ -7,8 +7,8 @@
     <ProjectGuid>{B92C4F5A-A257-4502-A76E-D8BC1745367D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Acr.Geofencing.Uwp</RootNamespace>
-    <AssemblyName>Acr.Geofencing.Uwp</AssemblyName>
+    <RootNamespace>Acr.Geofencing</RootNamespace>
+    <AssemblyName>Acr.Geofencing</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>

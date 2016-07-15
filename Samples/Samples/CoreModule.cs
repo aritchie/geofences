@@ -1,6 +1,7 @@
 ﻿using System;
 using Acr.Geofencing;
 using Acr.Notifications;
+using Acr.UserDialogs;
 using Autofac;
 
 
@@ -33,6 +34,11 @@ namespace Samples
             builder
                 .Register(x => Notifications.Instance)
                 .As<INotifications>()
+                .SingleInstance();
+
+            builder
+                .Register(x => UserDialogs.Instance)
+                .As<IUserDialogs>()
                 .SingleInstance();
         }
     }

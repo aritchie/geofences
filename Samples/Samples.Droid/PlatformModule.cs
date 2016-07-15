@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac;
+using SQLite.Net.Platform.XamarinAndroid;
 
 
 namespace Samples.Droid
@@ -13,7 +14,7 @@ namespace Samples.Droid
 
             builder
                 .Register(x => new SampleDbConnection(
-                    new SQLitePlatformIOS(),
+                    new SQLitePlatformAndroid(),
                     Environment.GetFolderPath(Environment.SpecialFolder.Personal)
                 ))
                 .AsSelf()

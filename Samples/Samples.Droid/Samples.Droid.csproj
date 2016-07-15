@@ -130,6 +130,9 @@
       <HintPath>..\..\packages\SQLite.Net-PCL.3.1.1\lib\MonoAndroid\SQLite.Net.Platform.XamarinAndroid.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SQLite.Net.Platform.XamarinIOS.Unified">
+      <HintPath>..\..\packages\SQLite.Net-PCL.3.1.1\lib\Xamarin.iOS10\SQLite.Net.Platform.XamarinIOS.Unified.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
@@ -225,6 +228,10 @@
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Acr.Geofencing.Android\Acr.Geofencing.Android.csproj">
+      <Project>{52e1ee31-a59c-4c56-bbae-837b51c409cc}</Project>
+      <Name>Acr.Geofencing.Android</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Acr.Geofencing.Interfaces\Acr.Geofencing.Interfaces.csproj">
       <Project>{5eff1cd0-bb12-47ae-a348-d0c761a754f3}</Project>
       <Name>Acr.Geofencing.Interfaces</Name>
