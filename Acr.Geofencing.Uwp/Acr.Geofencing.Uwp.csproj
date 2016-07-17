@@ -107,9 +107,17 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeofenceManagerImpl.cs" />
+    <Compile Include="..\Acr.Geofencing.Android\GeofenceManagerImpl.cs">
+      <Link>GeofenceManagerImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\Acr.Geofencing.Android\GeofenceSettings.cs">
+      <Link>GeofenceSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\Acr.Geofencing.Android\GeofenceState.cs">
+      <Link>GeofenceState.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Acr.Geofencing.Uwp.rd.xml" />
+    <EmbeddedResource Include="Properties\Acr.Geofencing.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Acr.Geofencing.Interfaces\Acr.Geofencing.Interfaces.csproj">

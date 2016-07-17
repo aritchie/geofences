@@ -1,6 +1,8 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2"
+    "Acr.Settings": "5.1.1",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
+    "Xam.Plugin.Geolocator": "3.0.4"
   },
   "frameworks": {
     "uap10.0": {}
