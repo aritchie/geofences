@@ -1,11 +1,9 @@
-#addin "Cake.Xamarin"
-#addin "Cake.FileHelpers"
 #tool nunit.consolerunner
 #tool gitlink
 
 var target = Argument("target", Argument("t", "package"));
 
-Setup(x => 
+Setup(x =>
 {
     DeleteFiles("./*.nupkg");
     DeleteFiles("./output/*.*");
@@ -32,10 +30,10 @@ Task("package")
 {
     GitLink("./", new GitLinkSettings
     {
-         RepositoryUrl = "https://github.com/aritchie/userdialogs",
+         RepositoryUrl = "https://github.com/aritchie/geofences",
          Branch = "master"
-    });    
-	NuGetPack(new FilePath("./nuspec/Acr.UserDialogs.nuspec"), new NuGetPackSettings());
+    });
+	NuGetPack(new FilePath("./nuspec/Acr.Geofencing.nuspec"), new NuGetPackSettings());
 	MoveFiles("./*.nupkg", "./output");
 });
 
