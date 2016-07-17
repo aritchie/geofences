@@ -1,21 +1,20 @@
 ﻿using System;
-using GeoCoordinatePortable;
 
 
 namespace Acr.Geofencing
 {
     internal class GeofenceState
     {
-        public GeofenceState(GeofenceRegion region) 
+        public GeofenceState(GeofenceRegion region)
         {
             this.Region = region;
-            this.Coordinate = new GeoCoordinate(region.Latitude, region.Longitude);
+            this.Position = new Position(region.Latitude, region.Longitude);
             this.Status = GeofenceStatus.Unknown;
         }
 
 
         public GeofenceRegion Region { get; }
-        public GeoCoordinate Coordinate { get; }
+        public Position Position { get; }
         public GeofenceStatus Status { get; set; }
     }
 }

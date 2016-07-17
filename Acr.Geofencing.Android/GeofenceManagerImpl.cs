@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
-using GeoCoordinatePortable;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 
@@ -11,14 +11,16 @@ namespace Acr.Geofencing
     public class GeofenceManagerImpl : IGeofenceManager
     {
         readonly IGeolocator geolocator;
+        readonly GeofenceSettings settings;
         readonly IDictionary<string, GeofenceState> states;
         readonly IObservable<GeofenceStatusEvent> observe;
-        GeoCoordinate current;
+        Position current;
 
 
-        public GeofenceManagerImpl(IGeolocator geolocator = null)
+        public GeofenceManagerImpl(IGeolocator geolocator = null, GeofenceSettings settings = null)
         {
             this.geolocator = geolocator ?? CrossGeolocator.Current;
+            this.settings = settings ?? GeofenceSettings.GetInstance();
             this.states = new Dictionary<string, GeofenceState>();
 
             this.observe = Observable
@@ -26,7 +28,7 @@ namespace Acr.Geofencing
                 {
                     var handler = new EventHandler<PositionEventArgs>((sender, args) =>
                     {
-                        this.current = new GeoCoordinate(args.Position.Latitude, args.Position.Longitude);
+                        this.current = new Position(args.Position.Latitude, args.Position.Longitude);
                         this.UpdateFences(ob, args.Position.Latitude, args.Position.Longitude);
                     });
 
@@ -48,7 +50,8 @@ namespace Acr.Geofencing
             return this.observe;
         }
 
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions { get; }
+
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions => this.settings.MonitoredRegions.ToList();
         public void StartMonitoring(GeofenceRegion region)
         {
             var state = new GeofenceState(region);
@@ -59,23 +62,26 @@ namespace Acr.Geofencing
             }
 
             this.states.Add(region.Identifier, state);
+            this.settings.MonitoredRegions.Add(region);
         }
 
 
         public void StopMonitoring(GeofenceRegion region)
         {
             this.states.Remove(region.Identifier);
+            this.settings.MonitoredRegions.Remove(region);
         }
 
 
         public void StopAllMonitoring()
         {
+            this.settings.MonitoredRegions.Clear();
         }
 
 
         bool IsInsideFence(double lat, double lng, GeofenceState state)
         {
-            var distance = state.Coordinate.GetDistanceTo(new GeoCoordinate(lat, lng));
+            var distance = state.Position.GetDistanceTo(new Position(lat, lng));
             var inside = state.Region.Radius < distance;
             return inside;
         }
@@ -102,16 +108,16 @@ namespace Acr.Geofencing
         }
 
 
-        void AssertValidGeofenceRegion(GeofenceRegion region)
-        {
-            if (String.IsNullOrWhiteSpace(region.Identifier))
-                throw new ArgumentException("No identifier set");
+        //void AssertValidGeofenceRegion(GeofenceRegion region)
+        //{
+        //    if (String.IsNullOrWhiteSpace(region.Identifier))
+        //        throw new ArgumentException("No identifier set");
 
-            if (region.Latitude < -90 || region.Latitude > 90)
-                throw new ArgumentException($"Invalid latitude value - {region.Latitude}");
+        //    if (region.Latitude < -90 || region.Latitude > 90)
+        //        throw new ArgumentException($"Invalid latitude value - {region.Latitude}");
 
-            if (region.Longitude < -180 || region.Longitude > 180)
-                throw new ArgumentException($"Invalid longitude value - {region.Longitude}");
-        }
+        //    if (region.Longitude < -180 || region.Longitude > 180)
+        //        throw new ArgumentException($"Invalid longitude value - {region.Longitude}");
+        //}
     }
 }
