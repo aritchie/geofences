@@ -37,11 +37,13 @@
     <Compile Include="..\Acr.Geofencing.Shared\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Distance.cs" />
     <Compile Include="GeofenceRegion.cs" />
     <Compile Include="GeofenceStatusEvent.cs" />
     <Compile Include="GeofenceStatus.cs" />
     <Compile Include="IGeofenceManager.cs" />
     <Compile Include="Position.cs" />
+    <Compile Include="PositionUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

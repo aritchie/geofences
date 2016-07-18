@@ -12,7 +12,5 @@ namespace Acr.Geofencing
         void StartMonitoring(GeofenceRegion region);
         void StopMonitoring(GeofenceRegion region);
         void StopAllMonitoring();
-
-        //GeofenceStatus GetCurrentStatus(GeofenceRegion region);
     }
 }
