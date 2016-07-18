@@ -73,7 +73,6 @@ namespace Acr.Geofencing
 
         public void StopAllMonitoring()
         {
-            // TODO: get native monitors and remove
         }
 
 
@@ -85,7 +84,7 @@ namespace Acr.Geofencing
                 Identifier = native.Identifier,
                 Latitude = native.Center.Latitude,
                 Longitude = native.Center.Longitude,
-                Radius = native.Radius
+                Radius = Distance.FromMeters(native.Radius)
             };
         }
 
@@ -93,7 +92,7 @@ namespace Acr.Geofencing
         protected virtual CLCircularRegion ToNative(GeofenceRegion region)
         {
             var center = new CLLocationCoordinate2D(region.Latitude, region.Longitude);
-            return new CLCircularRegion(center, region.Radius, region.Identifier);
+            return new CLCircularRegion(center, region.Radius.TotalMeters, region.Identifier);
         }
     }
 }
