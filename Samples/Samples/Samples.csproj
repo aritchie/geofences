@@ -57,6 +57,7 @@
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\GeofenceEventViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Acr.Mvvm, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

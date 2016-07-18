@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Autofac;
-using Samples.Pages;
+using Samples.Services;
+using Samples.ViewModels;
 using Xamarin.Forms;
 
 
@@ -13,20 +13,21 @@ namespace Samples
     {
         readonly IContainer container;
 
+
         public App(IContainer container)
         {
-            //var vm = null;
-            this.MainPage = new HomePage
-            {
-                BindingContext = null
-            };
+            this.container = container;
+            var vmMgr = this.container.Resolve<IViewModelManager>();
+
+            this.MainPage = vmMgr.CreatePage<HomeViewModel>();
         }
 
 
         protected override void OnResume()
         {
             base.OnResume();
-            foreach (var lifecycle in this.container.Resolve<IEnumerable<IAppLifecycle>>())
+            var services = this.container.Resolve<IEnumerable<IAppLifecycle>>();
+            foreach (var lifecycle in services)
                 lifecycle.OnAppResume();
         }
 
@@ -34,7 +35,8 @@ namespace Samples
         protected override void OnSleep()
         {
             base.OnSleep();
-            foreach (var lifecycle in this.container.Resolve<IEnumerable<IAppLifecycle>>())
+            var services = this.container.Resolve<IEnumerable<IAppLifecycle>>();
+            foreach (var lifecycle in services)
                 lifecycle.OnAppSleep();
         }
     }

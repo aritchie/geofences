@@ -4,31 +4,43 @@
              x:Class="Samples.Pages.HomePage">
     <TabbedPage.Children>
 
-        <NavigationPage>
+        <NavigationPage Title="History">
             <x:Arguments>
                 <ContentPage Title="History" BindingContext="{Binding History}">
                     <ContentPage.ToolbarItems>
-                        <ToolbarItem Text="" Command="{Binding}" />
+                        <ToolbarItem Text="Clear" Command="{Binding Clear}" />
                     </ContentPage.ToolbarItems>
 
                     <ContentPage.Content>
-                        <ListView>
-
+                        <ListView ItemsSource="{Binding Events}" IsRefreshing="{Binding IsLoading}" IsPullToRefreshEnabled="true">
+                        	<ListView.ItemTemplate>
+                        		<DataTemplate>
+                        			<ViewCell>
+                        				<ViewCell.View>
+											<StackLayout>
+                        						<Label Text="{Binding Identifier, StringFormat='Identifier: {0}'}" />
+												<Label Text="{Binding Status, StringFormat='Status: {0}'" />
+												<Label Text="{Binding Date, StringFormat='Date: '{0}'}" />
+											</StackLayout>
+										</ViewCell.View>	
+									</ViewCell>
+								</DataTemplate>
+							</ListView.ItemTemplate>
                         </ListView>
                     </ContentPage.Content>
                 </ContentPage>
             </x:Arguments>
         </NavigationPage>
 
-        <NavigationPage>
+        <NavigationPage Title="Settings">
             <x:Arguments>
                 <ContentPage Title="Settings" BindingContext="{Binding Settings}">
                     <ContentPage.ToolbarItems>
-                        <ToolbarItem Text="Stop All" Command="{Binding}" />
+                        <ToolbarItem Text="Stop All" Command="{Binding StopAll}" />
                     </ContentPage.ToolbarItems>
 
                     <ContentPage.Content>
-
+                    <!-- ApplyDefaults, Add, Remove -->
                     </ContentPage.Content>
                 </ContentPage>
             </x:Arguments>

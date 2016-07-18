@@ -19,8 +19,7 @@ namespace Samples.Services.Impl
 
 
         public TViewModel Create<TViewModel>(object args = null) where TViewModel : class, IViewModel
-        {
-            var vm = this.scope.Resolve<TViewModel>();
+        {            var vm = this.scope.Resolve<TViewModel>();
             vm.Init(args);
             return vm;
         }

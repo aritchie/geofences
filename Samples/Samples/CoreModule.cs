@@ -3,6 +3,8 @@ using Acr.Geofencing;
 using Acr.Notifications;
 using Acr.UserDialogs;
 using Autofac;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using Samples.Services.Impl;
 
 
@@ -45,6 +47,11 @@ namespace Samples
             builder
                 .Register(x => UserDialogs.Instance)
                 .As<IUserDialogs>()
+                .SingleInstance();
+
+            builder
+                .Register(x => CrossPermissions.Current)
+                .As<IPermissions>()
                 .SingleInstance();
         }
     }
