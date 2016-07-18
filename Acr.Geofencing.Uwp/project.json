@@ -2,6 +2,7 @@
   "dependencies": {
     "Acr.Settings": "5.1.1",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
+    "Rx-Main": "2.2.5",
     "Xam.Plugin.Geolocator": "3.0.4"
   },
   "frameworks": {

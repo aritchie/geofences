@@ -5,8 +5,10 @@
     "Acr.UserDialogs": "6.0.1",
     "Autofac": "3.5.2",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
+    "Plugin.Permissions": "1.1.7",
     "reactiveui": "6.5.0",
     "Splat": "1.6.2",
+    "SQLite.Net-PCL": "3.1.1",
     "SQLite.Net.Core-PCL": "3.1.1",
     "Xam.Plugin.Geolocator": "3.0.4",
     "Xamarin.Forms": "2.3.0.107"
