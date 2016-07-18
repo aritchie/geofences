@@ -3,6 +3,7 @@ using Acr.Geofencing;
 using Acr.Notifications;
 using Acr.UserDialogs;
 using Autofac;
+using Samples.Services.Impl;
 
 
 namespace Samples
@@ -25,6 +26,11 @@ namespace Samples
                 .AsImplementedInterfaces()
                 .SingleInstance()
                 .AutoActivate();
+
+            builder
+                .RegisterType<ViewModelManagerImpl>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
 
             builder
                 .Register(x => Geofences.Instance)

@@ -1,11 +1,10 @@
 ﻿using System;
-using Acr;
 using ReactiveUI;
 
 
 namespace Samples.ViewModels
 {
-    public abstract class AbstractViewModel : ReactiveObject, IViewModelLifecycle
+    public abstract class AbstractViewModel : ReactiveObject, IViewModel
     {
         public virtual void OnActivate()
         {
@@ -20,6 +19,11 @@ namespace Samples.ViewModels
         public virtual bool OnBack()
         {
             return true;
+        }
+
+
+        public virtual void Init(object args)
+        {
         }
     }
 }

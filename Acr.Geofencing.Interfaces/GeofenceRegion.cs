@@ -6,8 +6,7 @@ namespace Acr.Geofencing
     public class GeofenceRegion
     {
         public string Identifier { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public Position Center { get; set; }
         public Distance Radius { get; set; }
 
 

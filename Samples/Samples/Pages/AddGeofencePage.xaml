@@ -5,7 +5,21 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding Add}" />
     </ContentPage.ToolbarItems>
-    <ContentPage.Content>
 
+    <ContentPage.Content>
+        <TableView Intent="Form">
+            <TableSection Title="Details">
+                <EntryCell Label="Identifier" Text="{Binding Identifier}" />
+                <EntryCell Label="Center Latitude" Text="{Binding Latitude}" Keyboard="Numeric" />
+                <EntryCell Label="Center Longitude" Text="{Binding Longitude}" Keyboard="Numeric" />
+                <EntryCell Label="Radius (in meters)" Text="{Binding RadiusMeters}" Keyboard="Numeric" />
+            </TableSection>
+            <TableSection>
+                <TextCell Text="Add Geofence" Command="{Binding Add}" />
+            </TableSection>
+            <TableSection>
+                <TextCell Text="Use Current Location" Command="{Binding UseCurrentLocation}" />
+            </TableSection>
+        </TableView>
     </ContentPage.Content>
 </ContentPage>

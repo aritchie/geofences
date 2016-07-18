@@ -25,10 +25,14 @@ namespace Samples.Tasks
                 .WhenRegionStatusChanged()
                 .Subscribe(x =>
                 {
+                    var exit = x.Status == GeofenceStatus.Exited;
+
                     var notification = new Notification
                     {
-                        Title = "",
-                        Message = $""
+                        Title = exit ? "Bye" : "Welcome",
+                        Message = exit
+                            ? $"You have left the region \"{x.Region.Identifier}\""
+                            : $"You have entered the region \"{x.Region.Identifier}\""
                     };
                     this.notifications.Send(notification);
                     this.notifications.Badge = this.notifications.Badge + 1;

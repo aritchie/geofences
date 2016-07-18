@@ -6,13 +6,15 @@
 
         <NavigationPage>
             <x:Arguments>
-                <ContentPage Title="" BindingContext="{Binding}">
+                <ContentPage Title="History" BindingContext="{Binding History}">
                     <ContentPage.ToolbarItems>
                         <ToolbarItem Text="" Command="{Binding}" />
                     </ContentPage.ToolbarItems>
 
                     <ContentPage.Content>
+                        <ListView>
 
+                        </ListView>
                     </ContentPage.Content>
                 </ContentPage>
             </x:Arguments>
@@ -20,7 +22,7 @@
 
         <NavigationPage>
             <x:Arguments>
-                <ContentPage Title="{Binding List}" BindingContext="{Binding}">
+                <ContentPage Title="Settings" BindingContext="{Binding Settings}">
                     <ContentPage.ToolbarItems>
                         <ToolbarItem Text="Stop All" Command="{Binding}" />
                     </ContentPage.ToolbarItems>

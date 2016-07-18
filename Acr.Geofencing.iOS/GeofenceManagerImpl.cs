@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reactive.Linq;
 using CoreLocation;
 
@@ -25,23 +24,11 @@ namespace Acr.Geofencing
             return Observable.Create<GeofenceStatusEvent>(ob =>
             {
                 var enterHandler = new EventHandler<CLRegionEventArgs>((sender, args) =>
-                {
-                    var native = args.Region as CLCircularRegion;
-                    if (native == null)
-                        return;
-
-                    var region = this.FromNative(native);
-                    ob.OnNext(new GeofenceStatusEvent(region, GeofenceStatus.Entered));
-                });
+                    this.DoBroadcast(ob, args, GeofenceStatus.Entered)
+                );
                 var leftHandler = new EventHandler<CLRegionEventArgs>((sender, args) =>
-                {
-                    var native = args.Region as CLCircularRegion;
-                    if (native == null)
-                        return;
-
-                    var region = this.FromNative(native);
-                    ob.OnNext(new GeofenceStatusEvent(region, GeofenceStatus.Exited));
-                });
+                    this.DoBroadcast(ob, args, GeofenceStatus.Exited)
+                );
                 this.locationManager.RegionEntered += enterHandler;
                 this.locationManager.RegionLeft += leftHandler;
 
@@ -76,23 +63,47 @@ namespace Acr.Geofencing
         }
 
 
+        protected virtual void DoBroadcast(IObserver<GeofenceStatusEvent> ob, CLRegionEventArgs args, GeofenceStatus status)
+        {
+            var native = args.Region as CLCircularRegion;
+            if (native == null)
+                return;
+
+            var region = this.FromNative(native);
+            ob.OnNext(new GeofenceStatusEvent(region, status));
+        }
+
 
         protected virtual GeofenceRegion FromNative(CLCircularRegion native)
         {
             return new GeofenceRegion
             {
                 Identifier = native.Identifier,
-                Latitude = native.Center.Latitude,
-                Longitude = native.Center.Longitude,
+                Center = this.FromNative(native.Center),
                 Radius = Distance.FromMeters(native.Radius)
             };
         }
 
 
+        protected virtual Position FromNative(CLLocationCoordinate2D native)
+        {
+            return new Position(native.Latitude, native.Longitude);
+        }
+
+
+        protected virtual CLLocationCoordinate2D ToNative(Position position)
+        {
+            return new CLLocationCoordinate2D(position.Latitude, position.Longitude);
+        }
+
+
         protected virtual CLCircularRegion ToNative(GeofenceRegion region)
         {
-            var center = new CLLocationCoordinate2D(region.Latitude, region.Longitude);
-            return new CLCircularRegion(center, region.Radius.TotalMeters, region.Identifier);
+            return new CLCircularRegion(
+                this.ToNative(region.Center),
+                region.Radius.TotalMeters,
+                region.Identifier
+            );
         }
     }
 }
