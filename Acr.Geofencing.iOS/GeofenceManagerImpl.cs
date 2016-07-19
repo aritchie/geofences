@@ -20,6 +20,9 @@ namespace Acr.Geofencing
         }
 
 
+        public Distance DesiredAccuracy { get; set; } = Distance.FromKilometers(1);
+
+
         public IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
         {
             return Observable.Create<GeofenceStatusEvent>(ob =>
@@ -61,7 +64,9 @@ namespace Acr.Geofencing
         public void StartMonitoring(GeofenceRegion region)
         {
             var native = this.ToNative(region);
-            this.locationManager.StartMonitoring(native); // TODO: accuracy?
+            this.locationManager.StartMonitoring(native);
+            //this.locationManager.DesiredAccuracy
+            //this.locationManager.StartMonitoring(native, this.DesiredAccuracy.TotalMeters);
         }
 
 

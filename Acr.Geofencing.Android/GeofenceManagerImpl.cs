@@ -22,6 +22,7 @@ namespace Acr.Geofencing
             this.geolocator = geolocator ?? CrossGeolocator.Current;
             this.settings = settings ?? GeofenceSettings.GetInstance();
             this.states = new Dictionary<string, GeofenceState>();
+            //this.DesiredAccuracy = Distance.FromKilometers(1);
 
             this.observe = Observable
                 .Create<GeofenceStatusEvent>(ob =>
@@ -36,6 +37,20 @@ namespace Acr.Geofencing
                 })
                 .Publish()
                 .RefCount();
+        }
+
+
+        public Distance DesiredAccuracy 
+        {
+            get 
+            {
+                return Distance.FromMeters(this.geolocator.DesiredAccuracy);
+            }
+            set 
+            {
+                this.geolocator.DesiredAccuracy = value.TotalMeters;
+                // TODO: do I need to restart?
+            }
         }
 
 
