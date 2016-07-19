@@ -13,7 +13,7 @@
                     </ContentPage.ToolbarItems>
 
                     <ContentPage.Content>
-                        <ListView ItemsSource="{Binding Events}" RefreshCommand="{Binding Reload}" IsRefreshing="{Binding IsLoading}" IsPullToRefreshEnabled="true">
+                        <ListView ItemsSource="{Binding Events}" RowHeight="80" RefreshCommand="{Binding Reload}" IsRefreshing="{Binding IsLoading}" IsPullToRefreshEnabled="true">
                         	<ListView.ItemTemplate>
                         		<DataTemplate>
                         			<ViewCell>

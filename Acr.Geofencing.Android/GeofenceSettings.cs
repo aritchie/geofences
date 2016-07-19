@@ -7,7 +7,7 @@ namespace Acr.Geofencing
 {
     public class GeofenceSettings : AbstractSettingObject
     {
-        public IList<GeofenceRegion> MonitoredRegions { get; set; }
+        public IList<GeofenceRegion> MonitoredRegions { get; set; } = new List<GeofenceRegion>();
 
 
         static readonly Lazy<GeofenceSettings> instanceLazy = new Lazy<GeofenceSettings>(() => Acr.Settings.Settings.Local.Bind<GeofenceSettings>());

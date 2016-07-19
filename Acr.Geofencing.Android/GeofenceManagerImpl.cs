@@ -23,6 +23,8 @@ namespace Acr.Geofencing
             this.settings = settings ?? GeofenceSettings.GetInstance();
             this.states = new Dictionary<string, GeofenceState>();
             //this.DesiredAccuracy = Distance.FromKilometers(1);
+            if (this.settings.MonitoredRegions.Count > 0) 
+                this.TryStartGeolocator();
 
             this.observe = Observable
                 .Create<GeofenceStatusEvent>(ob =>
@@ -72,9 +74,7 @@ namespace Acr.Geofencing
 
             this.states.Add(region.Identifier, state);
             this.settings.MonitoredRegions.Add(region);
-
-            if (!this.geolocator.IsListening)
-                this.geolocator.StartListeningAsync(1, 10, false);
+            this.TryStartGeolocator();
         }
 
 
@@ -95,7 +95,14 @@ namespace Acr.Geofencing
         }
 
 
-        void UpdateFences(IObserver<GeofenceStatusEvent> ob, double lat, double lng)
+        protected void TryStartGeolocator() 
+        {
+            if (!this.geolocator.IsListening)
+                this.geolocator.StartListeningAsync(1, 10, false);
+        }
+
+
+        protected void UpdateFences(IObserver<GeofenceStatusEvent> ob, double lat, double lng)
         {
             var loc = new Position(lat, lng);
 
@@ -109,7 +116,7 @@ namespace Acr.Geofencing
                     // status being set for first time as we didn't have current coordinates
                     fence.Status = status;
                 }
-                else
+                else if (fence.Status != status)
                 {
                     fence.Status = status;
                     ob.OnNext(new GeofenceStatusEvent(fence.Region, status));

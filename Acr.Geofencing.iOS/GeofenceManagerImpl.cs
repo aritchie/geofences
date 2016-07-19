@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Diagnostics;
 using CoreLocation;
 
 
@@ -27,6 +28,8 @@ namespace Acr.Geofencing
         {
             return Observable.Create<GeofenceStatusEvent>(ob =>
             {
+                Debug.WriteLine("Wiring up to Geofencing events");
+
                 var enterHandler = new EventHandler<CLRegionEventArgs>((sender, args) =>
                     this.DoBroadcast(ob, args, GeofenceStatus.Entered)
                 );
@@ -38,6 +41,7 @@ namespace Acr.Geofencing
 
                 return () =>
                 {
+                    Debug.WriteLine("Unhooking from Geofencing events");
                     this.locationManager.RegionEntered -= enterHandler;
                     this.locationManager.RegionLeft -= leftHandler;
                 };
@@ -93,6 +97,7 @@ namespace Acr.Geofencing
 
         protected virtual void DoBroadcast(IObserver<GeofenceStatusEvent> ob, CLRegionEventArgs args, GeofenceStatus status)
         {
+            Debug.WriteLine("Firing geofence region event");
             var native = args.Region as CLCircularRegion;
             if (native == null)
                 return;

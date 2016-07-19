@@ -77,7 +77,7 @@ namespace Samples.ViewModels
             this.IsLoading = true;
             this.Events = this.conn
                 .GeofenceEvents
-                .OrderBy(x => x.DateCreatedUtc)
+                .OrderByDescending(x => x.DateCreatedUtc)
                 .Select(x => new GeofenceEventViewModel(x))
                 .ToList();
             this.IsLoading = false;
