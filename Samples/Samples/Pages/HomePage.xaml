@@ -8,19 +8,20 @@
             <x:Arguments>
                 <ContentPage Title="History" BindingContext="{Binding History}">
                     <ContentPage.ToolbarItems>
+						<ToolbarItem Text="Send DB" Command="{Binding SendDatabase}" />
                         <ToolbarItem Text="Clear" Command="{Binding Clear}" />
                     </ContentPage.ToolbarItems>
 
                     <ContentPage.Content>
-                        <ListView ItemsSource="{Binding Events}" IsRefreshing="{Binding IsLoading}" IsPullToRefreshEnabled="true">
+                        <ListView ItemsSource="{Binding Events}" RefreshCommand="{Binding Reload}" IsRefreshing="{Binding IsLoading}" IsPullToRefreshEnabled="true">
                         	<ListView.ItemTemplate>
                         		<DataTemplate>
                         			<ViewCell>
                         				<ViewCell.View>
 											<StackLayout>
                         						<Label Text="{Binding Identifier, StringFormat='Identifier: {0}'}" />
-												<Label Text="{Binding Status, StringFormat='Status: {0}'" />
-												<Label Text="{Binding Date, StringFormat='Date: '{0}'}" />
+												<Label Text="{Binding Status, StringFormat='Status: {0}'}" />
+												<Label Text="{Binding Date, StringFormat='Date: {0}'}" />
 											</StackLayout>
 										</ViewCell.View>	
 									</ViewCell>
@@ -36,11 +37,22 @@
             <x:Arguments>
                 <ContentPage Title="Settings" BindingContext="{Binding Settings}">
                     <ContentPage.ToolbarItems>
-                        <ToolbarItem Text="Stop All" Command="{Binding StopAll}" />
+						<ToolbarItem Text="Menu" Command="{Binding Menu}" />
                     </ContentPage.ToolbarItems>
 
                     <ContentPage.Content>
-                    <!-- ApplyDefaults, Add, Remove -->
+                    	<ListView ItemsSource="{Binding CurrentRegions}">
+							<ListView.ItemTemplate>
+								<DataTemplate>
+									<TextCell Text="{Binding Region.Identifier}" Detail="{Binding Region.Radius, StringFormat='Radius: {0}'}">
+										<TextCell.ContextActions>
+											<MenuItem Text="View On Map" Command="{Binding ViewMap}" />
+											<MenuItem Text="Remove" Command="{Binding Remove}" IsDestructive="true" />
+										</TextCell.ContextActions>
+									</TextCell>
+								</DataTemplate>
+							</ListView.ItemTemplate>
+						</ListView>
                     </ContentPage.Content>
                 </ContentPage>
             </x:Arguments>
