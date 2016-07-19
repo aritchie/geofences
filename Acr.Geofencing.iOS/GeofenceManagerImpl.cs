@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using CoreLocation;
 
@@ -34,16 +35,29 @@ namespace Acr.Geofencing
 
                 return () =>
                 {
-                    this.locationManager.RegionEntered += enterHandler;
-                    this.locationManager.RegionLeft += leftHandler;
+                    this.locationManager.RegionEntered -= enterHandler;
+                    this.locationManager.RegionLeft -= leftHandler;
                 };
             });
         }
 
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions => new ReadOnlyCollection<GeofenceRegion>(new List<GeofenceRegion>());
-        //this.locationManager
-        //    .MonitoredRegions
-        //    .Where(x => x.)
+
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions 
+        {
+            get 
+            {
+                var list = this
+                    .locationManager
+                    .MonitoredRegions
+                    .Select(x => x as CLCircularRegion)
+                    .Where(x => x != null)
+                    .Select(this.FromNative)
+                    .ToList();
+                return new ReadOnlyCollection<GeofenceRegion>(list);
+            }
+        }
+
+
         public void StartMonitoring(GeofenceRegion region)
         {
             var native = this.ToNative(region);
@@ -54,12 +68,21 @@ namespace Acr.Geofencing
         public void StopMonitoring(GeofenceRegion region)
         {
             var native = this.ToNative(region);
-            this.locationManager.StartMonitoring(native);
+            this.locationManager.StopMonitoring(native);
         }
 
 
         public void StopAllMonitoring()
         {
+            var natives = this
+                .locationManager
+                .MonitoredRegions
+                .Select(x => x as CLCircularRegion)
+                .Where(x => x != null)
+                .ToList();
+            
+            foreach (var native in natives)
+                this.locationManager.StopMonitoring(native);
         }
 
 
