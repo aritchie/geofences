@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Diagnostics;
 using CoreLocation;
+using UIKit;
 
 
 namespace Acr.Geofencing
@@ -67,8 +68,11 @@ namespace Acr.Geofencing
 
         public void StartMonitoring(GeofenceRegion region)
         {
-            var native = this.ToNative(region);
-            this.locationManager.StartMonitoring(native);
+            UIApplication.SharedApplication.InvokeOnMainThread(() =>
+            {
+                var native = this.ToNative(region);
+                this.locationManager.StartMonitoring(native);
+            });
             //this.locationManager.DesiredAccuracy
             //this.locationManager.StartMonitoring(native, this.DesiredAccuracy.TotalMeters);
         }
