@@ -68,6 +68,7 @@ namespace Acr.Geofencing
 
         public void StartMonitoring(GeofenceRegion region)
         {
+            //if !CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion) {
             UIApplication.SharedApplication.InvokeOnMainThread(() =>
             {
                 var native = this.ToNative(region);
@@ -140,7 +141,11 @@ namespace Acr.Geofencing
                 this.ToNative(region.Center),
                 region.Radius.TotalMeters,
                 region.Identifier
-            );
+            ) 
+            {
+                NotifyOnExit = true,
+                NotifyOnEntry = true
+            };
         }
     }
 }
