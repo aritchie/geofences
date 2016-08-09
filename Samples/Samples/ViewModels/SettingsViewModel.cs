@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr;
 using Acr.Geofencing;
@@ -43,6 +44,7 @@ namespace Samples.ViewModels
                     if (result)
                     {
                         geofences.StopAllMonitoring();
+                        await Task.Delay(500);
                         geofences.StartMonitoring(new GeofenceRegion
                         {
                             Identifier = "FC HQ",
@@ -61,6 +63,7 @@ namespace Samples.ViewModels
                             Center = new Position(43.8477697, -79.0435461),
                             Radius = Distance.FromMeters(500)
                         });
+                        await Task.Delay(500); // ios needs a second to breathe when registering like this
                         this.RaisePropertyChanged("CurrentRegions");
                     }                
                 })
