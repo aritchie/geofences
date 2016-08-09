@@ -20,8 +20,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app is tracking the shit out of you and murdering your battery - live with it</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app is tracking the shit out of you and murdering your battery - live with it</string>
 	<key>MinimumOSVersion</key>
@@ -60,5 +58,7 @@
 	</array>
 	<key>CFBundleName</key>
 	<string>Geofencing</string>
+	<key>UIApplicationExitsOnSuspend</key>
+	<false/>
 </dict>
 </plist>
