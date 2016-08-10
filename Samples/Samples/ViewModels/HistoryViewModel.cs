@@ -17,32 +17,31 @@ namespace Samples.ViewModels
     public class HistoryViewModel : AbstractViewModel
     {
         readonly SampleDbConnection conn;
-        readonly IDisposable refresher;
 
 
-        public HistoryViewModel(SampleDbConnection conn, 
+        public HistoryViewModel(SampleDbConnection conn,
                                 IGeofenceManager geofences,
                                 IUserDialogs dialogs,
                                 IMessaging messaging)
         {
             this.conn = conn;
-            this.refresher = geofences
-                .WhenRegionStatusChanged()
-                .Subscribe(async x =>
-                {
-                    await Task.Delay(500); // let store task finish
-                    this.Load();
-                });
+            //this.refresher = geofences
+            //    .WhenRegionStatusChanged()
+            //    .Subscribe(async x =>
+            //    {
+            //        await Task.Delay(500); // let store task finish
+            //        this.Load();
+            //    });
 
             this.Reload = new Command(this.Load);
 
-            this.Clear = ReactiveCommand.CreateAsyncTask(async x => 
+            this.Clear = ReactiveCommand.CreateAsyncTask(async x =>
             {
                 var result = await dialogs.ConfirmAsync(new ConfirmConfig()
                    .UseYesNo()
                    .SetMessage("Are you sure you want to delete all of your history?"));
 
-                if (result) 
+                if (result)
                 {
                     this.conn.DeleteAll<GeofenceEvent>();
                     this.Load();

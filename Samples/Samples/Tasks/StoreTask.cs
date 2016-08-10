@@ -21,14 +21,13 @@ namespace Samples.Tasks
 
         public void Start()
         {
-            this.geofences
-                .WhenRegionStatusChanged()
-                .Subscribe(x => this.conn.Insert(new GeofenceEvent
+            this.geofences.RegionStatusChanged += (sender, args) =>
+                this.conn.Insert(new GeofenceEvent
                 {
-                    Identifier = x.Region.Identifier,
-                    Status = x.Status,
+                    Identifier = args.Region.Identifier,
+                    Status = args.Status,
                     DateCreatedUtc = DateTime.UtcNow
-                }));
+                });
         }
     }
 }

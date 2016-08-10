@@ -19,40 +19,20 @@ namespace Acr.Geofencing
         public GeofenceManagerImpl()
         {
             this.locationManager = new CLLocationManager();
+            this.locationManager.RegionEntered += (sender, args) => this.DoBroadcast(args, GeofenceStatus.Entered);
+            this.locationManager.RegionLeft += (sender, args) => this.DoBroadcast(args, GeofenceStatus.Exited);
         }
 
 
         public Distance DesiredAccuracy { get; set; } = Distance.FromKilometers(1);
 
 
-        public IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
+        public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
+
+
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions
         {
-            return Observable.Create<GeofenceStatusEvent>(ob =>
-            {
-                Debug.WriteLine("Wiring up to Geofencing events");
-
-                var enterHandler = new EventHandler<CLRegionEventArgs>((sender, args) =>
-                    this.DoBroadcast(ob, args, GeofenceStatus.Entered)
-                );
-                var leftHandler = new EventHandler<CLRegionEventArgs>((sender, args) =>
-                    this.DoBroadcast(ob, args, GeofenceStatus.Exited)
-                );
-                this.locationManager.RegionEntered += enterHandler;
-                this.locationManager.RegionLeft += leftHandler;
-
-                return () =>
-                {
-                    Debug.WriteLine("Unhooking from Geofencing events");
-                    this.locationManager.RegionEntered -= enterHandler;
-                    this.locationManager.RegionLeft -= leftHandler;
-                };
-            });
-        }
-
-
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions 
-        {
-            get 
+            get
             {
                 var list = this
                     .locationManager
@@ -94,13 +74,13 @@ namespace Acr.Geofencing
                 .Select(x => x as CLCircularRegion)
                 .Where(x => x != null)
                 .ToList();
-            
+
             foreach (var native in natives)
                 this.locationManager.StopMonitoring(native);
         }
 
 
-        protected virtual void DoBroadcast(IObserver<GeofenceStatusEvent> ob, CLRegionEventArgs args, GeofenceStatus status)
+        protected virtual void DoBroadcast(CLRegionEventArgs args, GeofenceStatus status)
         {
             Debug.WriteLine("Firing geofence region event");
             var native = args.Region as CLCircularRegion;
@@ -108,7 +88,7 @@ namespace Acr.Geofencing
                 return;
 
             var region = this.FromNative(native);
-            ob.OnNext(new GeofenceStatusEvent(region, status));
+            this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(region, status));
         }
 
 
@@ -141,7 +121,7 @@ namespace Acr.Geofencing
                 this.ToNative(region.Center),
                 region.Radius.TotalMeters,
                 region.Identifier
-            ) 
+            )
             {
                 NotifyOnExit = true,
                 NotifyOnEntry = true

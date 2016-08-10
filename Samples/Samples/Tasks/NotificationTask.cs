@@ -21,22 +21,20 @@ namespace Samples.Tasks
 
         public void Start()
         {
-            this.geofences
-                .WhenRegionStatusChanged()
-                .Subscribe(x =>
-                {
-                    var exit = x.Status == GeofenceStatus.Exited;
+            this.geofences.RegionStatusChanged += (sender, args) =>
+            {
+                var exit = args.Status == GeofenceStatus.Exited;
 
-                    var notification = new Notification
-                    {
-                        Title = exit ? "Bye" : "Welcome",
-                        Message = exit
-                            ? $"You have left the region \"{x.Region.Identifier}\""
-                            : $"You have entered the region \"{x.Region.Identifier}\""
-                    };
-                    this.notifications.Send(notification);
-                    this.notifications.Badge = this.notifications.Badge + 1;
-                });
+                var notification = new Notification
+                {
+                    Title = exit ? "Bye" : "Welcome",
+                    Message = exit
+                        ? $"You have left the region \"{args.Region.Identifier}\""
+                        : $"You have entered the region \"{args.Region.Identifier}\""
+                };
+                this.notifications.Send(notification);
+                this.notifications.Badge = this.notifications.Badge + 1;
+            };
         }
 
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 
@@ -13,7 +12,6 @@ namespace Acr.Geofencing
         readonly IGeolocator geolocator;
         readonly GeofenceSettings settings;
         readonly IDictionary<string, GeofenceState> states;
-        readonly IObservable<GeofenceStatusEvent> observe;
         Position current;
 
 
@@ -21,6 +19,8 @@ namespace Acr.Geofencing
         {
             this.geolocator = geolocator ?? CrossGeolocator.Current;
             this.settings = settings ?? GeofenceSettings.GetInstance();
+            this.geolocator.DesiredAccuracy = 200;
+
             this.states = new Dictionary<string, GeofenceState>();
             //this.DesiredAccuracy = Distance.FromKilometers(1);
             if (this.settings.MonitoredRegions.Count > 0)
@@ -42,6 +42,9 @@ namespace Acr.Geofencing
         }
 
 
+        public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
+
+
         public Distance DesiredAccuracy
         {
             get
@@ -51,14 +54,7 @@ namespace Acr.Geofencing
             set
             {
                 this.geolocator.DesiredAccuracy = value.TotalMeters;
-                // TODO: do I need to restart?
             }
-        }
-
-
-        public IObservable<GeofenceStatusEvent> WhenRegionStatusChanged()
-        {
-            return this.observe;
         }
 
 
@@ -97,12 +93,13 @@ namespace Acr.Geofencing
 
         protected void TryStartGeolocator()
         {
+            this.geolocator.AllowsBackgroundUpdates = true;
             if (!this.geolocator.IsListening)
-                this.geolocator.StartListeningAsync(1, 10, false);
+                this.geolocator.StartListeningAsync(600, 200, false);
         }
 
 
-        protected void UpdateFences(IObserver<GeofenceStatusEvent> ob, double lat, double lng)
+        protected void UpdateFences(double lat, double lng)
         {
             var loc = new Position(lat, lng);
 
@@ -119,7 +116,7 @@ namespace Acr.Geofencing
                 else if (fence.Status != status)
                 {
                     fence.Status = status;
-                    ob.OnNext(new GeofenceStatusEvent(fence.Region, status));
+                    this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(fence.Region, status));
                 }
             }
         }
