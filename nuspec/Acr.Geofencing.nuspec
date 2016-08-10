@@ -15,18 +15,13 @@
 Initial Release
         </releaseNotes>
         <dependencies>
-            <group>
-                <dependency id="Rx-Main" version="[2.2.5,)" />
-            </group>
             <group targetFramework="MonoAndroid10">
                 <dependency id="Acr.Settings" version="[5.1.1, 6)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
-                <dependency id="Rx-Main" version="[2.2.5,)" />
             </group>
             <group targetFramework="uap10.0">
                 <dependency id="Acr.Settings" version="[5.1.1, 6)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
-                <dependency id="Rx-Main" version="[2.2.5,)" />
             </group>
         </dependencies>
     </metadata>
@@ -35,13 +30,13 @@ Initial Release
         <file src="..\src\Acr.Geofencing\bin\Release\Acr.Geofencing.*" target="lib\portable-win+net45+wp8+win8+wpa81" />
 
         <!-- android -->
-        <file src="..\src\Acr.Geofencing.Android\bin\Release\Acr.Geofencing.*" target="lib\MonoAndroid10" />
+        <file src="..\src\Acr.Geofencing.Generic\bin\Release\Acr.Geofencing.*" target="lib\MonoAndroid10" />
 
         <!-- ios -->
         <file src="..\src\Acr.Geofencing.iOS\bin\iPhone\Release\Acr.Geofencing.*" target="lib\Xamarin.iOS10" />
 
         <!-- uwp -->
-        <file src="..\src\Acr.Geofencing.Windows\bin\Release\Acr.Geofencing.*" target="lib\uap10.0" />
+        <file src="..\src\Acr.Geofencing.Generic\bin\Release\Acr.Geofencing.*" target="lib\uap10.0" />
 
     </files>
 </package>

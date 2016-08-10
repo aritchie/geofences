@@ -23,32 +23,32 @@ namespace Acr.Geofencing
             this.settings = settings ?? GeofenceSettings.GetInstance();
             this.states = new Dictionary<string, GeofenceState>();
             //this.DesiredAccuracy = Distance.FromKilometers(1);
-            if (this.settings.MonitoredRegions.Count > 0) 
+            if (this.settings.MonitoredRegions.Count > 0)
                 this.TryStartGeolocator();
 
-            this.observe = Observable
-                .Create<GeofenceStatusEvent>(ob =>
-                {
-                    var handler = new EventHandler<PositionEventArgs>((sender, args) =>
-                    {
-                        this.current = new Position(args.Position.Latitude, args.Position.Longitude);
-                        this.UpdateFences(ob, args.Position.Latitude, args.Position.Longitude);
-                    });
-                    this.geolocator.PositionChanged += handler;
-                    return () => this.geolocator.PositionChanged -= handler;
-                })
-                .Publish()
-                .RefCount();
+            //this.observe = Observable
+            //    .Create<GeofenceStatusEvent>(ob =>
+            //    {
+            //        var handler = new EventHandler<PositionEventArgs>((sender, args) =>
+            //        {
+            //            this.current = new Position(args.Position.Latitude, args.Position.Longitude);
+            //            this.UpdateFences(ob, args.Position.Latitude, args.Position.Longitude);
+            //        });
+            //        this.geolocator.PositionChanged += handler;
+            //        return () => this.geolocator.PositionChanged -= handler;
+            //    })
+            //    .Publish()
+            //    .RefCount();
         }
 
 
-        public Distance DesiredAccuracy 
+        public Distance DesiredAccuracy
         {
-            get 
+            get
             {
                 return Distance.FromMeters(this.geolocator.DesiredAccuracy);
             }
-            set 
+            set
             {
                 this.geolocator.DesiredAccuracy = value.TotalMeters;
                 // TODO: do I need to restart?
@@ -95,7 +95,7 @@ namespace Acr.Geofencing
         }
 
 
-        protected void TryStartGeolocator() 
+        protected void TryStartGeolocator()
         {
             if (!this.geolocator.IsListening)
                 this.geolocator.StartListeningAsync(1, 10, false);

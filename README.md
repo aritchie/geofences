@@ -1,31 +1,60 @@
+# ACR Geofence Plugin for Xamarin & Windows
 
-I disliked the need for google play services and the complexity around that for a simple geofence, so I have made my own.
-Why use the geolocator library?
-* James has done a ton of work around the Android geolocation mess
-* It covers the use-cases for UWP as well
+A cross platform library for Xamarin & Windows that allows for easy geofence setup and monitoring
 
-Why not use the other plugin library?
-* Way over complicated
-* Covers cases that had nothing to do with geofences such as notifications
-* Based on interfaces pluging into events, not actual events
+### HOW TO USE
 
-Why are using Reactive Extensions
-* They are just better than traditional events for so many reasons.
-* I use an old version as 3.0 does not support PCL any longer.  NetStandard, at this time (July 2016) is not ready for primetime consumption in my opinion.
+## To start monitoring
+
+    Geofences.Instance.StartMonitoring(new GeofenceRegion 
+    {
+        Identifier = "My House",
+        Radius = Distance.FromKilometers(1),
+        Center = new Position(LATITUDE, LONGITUDE)
+    });
+
+## Wire up to notifications
+
+    Geofences.Instance.RegionStatusChanged += (sender, args) => 
+    {
+        args.State // entered or exited
+        args.Region // Identifier & details
+    };
+
+## Stop monitoring a region
+    
+    Geofences.Instance.StopMonitoring(GeofenceRegion);
+
+    or
+
+    Geofences.Instance.StopAllMonitoring();
+
+### SETUP
+
+## Android
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    android.permission.ACCESS_FINE_LOCATION
+    android.permission.ACCESS_COARSE_LOCATION
+    com.google.android.providers.gsf.permission.READ_GSERVICES
+    android.permission.RECEIVE_BOOT_COMPLETED
+
+## iOS
+
+    Info.plist
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Can we use your location</string>
+
+
+### FAQ
+
+Q) Why create another geofence plugin
+A) I felt like the integration or bloat in other geofence libraries (stay, notifications, etc). I also didn't like that Google Play Services were required in Android which required your device to be online when creating the geofences.  This did not work with my requirements
+
+Q) Why use a cross platform GPS library for Android only
+A) James has done a ton of work around the Android geolocation mess.  I didn't want to duplicate this.  I just wanted to attach to an event and set the desired accuracy
 
 Android
 Mainfest
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-android.permission.ACCESS_FINE_LOCATION
-android.permission.ACCESS_COARSE_LOCATION
-com.google.android.providers.gsf.permission.READ_GSERVICES
-android.permission.RECEIVE_BOOT_COMPLETED
 
 
-iOS
-
-Info.plist
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Can we use your location</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We are using your location</string>

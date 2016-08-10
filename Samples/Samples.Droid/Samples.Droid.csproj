@@ -236,9 +236,9 @@
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Acr.Geofencing.Android\Acr.Geofencing.Android.csproj">
-      <Project>{52e1ee31-a59c-4c56-bbae-837b51c409cc}</Project>
-      <Name>Acr.Geofencing.Android</Name>
+    <ProjectReference Include="..\..\Acr.Geofencing.Generic\Acr.Geofencing.Generic.csproj">
+      <Project>{72b25a56-5586-4620-92c7-27404f7c1622}</Project>
+      <Name>Acr.Geofencing.Generic</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Acr.Geofencing.Interfaces\Acr.Geofencing.Interfaces.csproj">
       <Project>{5eff1cd0-bb12-47ae-a348-d0c761a754f3}</Project>

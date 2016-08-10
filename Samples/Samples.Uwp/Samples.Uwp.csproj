@@ -128,13 +128,13 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Acr.Geofencing.Generic\Acr.Geofencing.Generic.csproj">
+      <Project>{72b25a56-5586-4620-92c7-27404f7c1622}</Project>
+      <Name>Acr.Geofencing.Generic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Acr.Geofencing.Interfaces\Acr.Geofencing.Interfaces.csproj">
       <Project>{5eff1cd0-bb12-47ae-a348-d0c761a754f3}</Project>
       <Name>Acr.Geofencing.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Acr.Geofencing.Uwp\Acr.Geofencing.Uwp.csproj">
-      <Project>{b92c4f5a-a257-4502-a76e-d8bc1745367d}</Project>
-      <Name>Acr.Geofencing.Uwp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Samples\Samples.csproj">
       <Project>{01553d0e-1ba0-40a4-a759-ade7068a126d}</Project>
