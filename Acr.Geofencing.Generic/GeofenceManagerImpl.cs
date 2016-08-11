@@ -18,27 +18,18 @@ namespace Acr.Geofencing
         public GeofenceManagerImpl(IGeolocator geolocator = null, GeofenceSettings settings = null)
         {
             this.geolocator = geolocator ?? CrossGeolocator.Current;
+            this.geolocator.AllowsBackgroundUpdates = true;
+            this.geolocator.PositionChanged += (sender, args) =>
+            {
+                this.current = new Position(args.Position.Latitude, args.Position.Longitude);
+                this.UpdateFences(args.Position.Latitude, args.Position.Longitude);
+            };
             this.settings = settings ?? GeofenceSettings.GetInstance();
-            this.geolocator.DesiredAccuracy = 200;
+            this.DesiredAccuracy = Distance.FromMeters(200);
 
             this.states = new Dictionary<string, GeofenceState>();
-            //this.DesiredAccuracy = Distance.FromKilometers(1);
             if (this.settings.MonitoredRegions.Count > 0)
                 this.TryStartGeolocator();
-
-            //this.observe = Observable
-            //    .Create<GeofenceStatusEvent>(ob =>
-            //    {
-            //        var handler = new EventHandler<PositionEventArgs>((sender, args) =>
-            //        {
-            //            this.current = new Position(args.Position.Latitude, args.Position.Longitude);
-            //            this.UpdateFences(ob, args.Position.Latitude, args.Position.Longitude);
-            //        });
-            //        this.geolocator.PositionChanged += handler;
-            //        return () => this.geolocator.PositionChanged -= handler;
-            //    })
-            //    .Publish()
-            //    .RefCount();
         }
 
 

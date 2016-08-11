@@ -66,6 +66,7 @@ namespace Samples.Droid
 			global::Splat.Resource.String.library_name = global::Samples.Droid.Resource.String.library_name;
 			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.ApplicationName = global::Samples.Droid.Resource.String.ApplicationName;
 			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.Hello = global::Samples.Droid.Resource.String.Hello;
+			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::Samples.Droid.Resource.Attribute.actionBarSize;
 		}
 		
 		public partial class Animation
