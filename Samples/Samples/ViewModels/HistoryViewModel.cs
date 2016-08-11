@@ -17,6 +17,7 @@ namespace Samples.ViewModels
     public class HistoryViewModel : AbstractViewModel
     {
         readonly SampleDbConnection conn;
+        readonly IGeofenceManager geofences;
 
 
         public HistoryViewModel(SampleDbConnection conn,
@@ -25,14 +26,7 @@ namespace Samples.ViewModels
                                 IMessaging messaging)
         {
             this.conn = conn;
-            //this.refresher = geofences
-            //    .WhenRegionStatusChanged()
-            //    .Subscribe(async x =>
-            //    {
-            //        await Task.Delay(500); // let store task finish
-            //        this.Load();
-            //    });
-
+            this.geofences = geofences;
             this.Reload = new Command(this.Load);
 
             this.Clear = ReactiveCommand.CreateAsyncTask(async x =>
@@ -68,8 +62,22 @@ namespace Samples.ViewModels
         {
             base.OnActivate();
             this.Load();
+            this.geofences.RegionStatusChanged += this.OnRegionStatusChanged;
         }
 
+
+        public override void OnDeactivate()
+        {
+            base.OnDeactivate();
+            this.geofences.RegionStatusChanged -= this.OnRegionStatusChanged;
+        }
+
+
+        async void OnRegionStatusChanged(object sender, GeofenceStatusChangedEventArgs args)
+        {
+            await Task.Delay(500); // let task commit record first
+            this.Load();
+        }
 
         void Load()
         {

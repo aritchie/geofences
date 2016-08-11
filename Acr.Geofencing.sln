@@ -43,6 +43,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Acr.Geofencing.Shared\Acr.Geofencing.Shared.projitems*{31fa338f-6bc7-4bc3-95df-3e91abd7a01a}*SharedItemsImports = 4
+		Acr.Geofencing.Shared\Acr.Geofencing.Shared.projitems*{72b25a56-5586-4620-92c7-27404f7c1622}*SharedItemsImports = 4
 		Acr.Geofencing.Shared\Acr.Geofencing.Shared.projitems*{7e23f192-5d23-4b7f-9823-2960083e47ec}*SharedItemsImports = 13
 		Acr.Geofencing.Shared\Acr.Geofencing.Shared.projitems*{a62a945c-0797-4805-a1bd-c7b809d4ea14}*SharedItemsImports = 4
 	EndGlobalSection
