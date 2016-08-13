@@ -60,7 +60,7 @@ namespace Acr.Geofencing
             }
 
             this.states.Add(region.Identifier, state);
-            this.settings.MonitoredRegions.Add(region);
+            this.settings.Add(region);
             this.TryStartGeolocator();
         }
 
@@ -68,7 +68,7 @@ namespace Acr.Geofencing
         public void StopMonitoring(GeofenceRegion region)
         {
             this.states.Remove(region.Identifier);
-            this.settings.MonitoredRegions.Remove(region);
+            this.settings.Remove(region);
 
             if (!this.settings.MonitoredRegions.Any())
                 this.geolocator.StopListeningAsync();
