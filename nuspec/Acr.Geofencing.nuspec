@@ -12,6 +12,10 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <tags>geofences windows xamarin xam.pcl</tags>
         <releaseNotes>
+1.0.1
+[fix][droid] remember registered geofences on android
+
+1.0
 Initial Release
         </releaseNotes>
         <dependencies>
