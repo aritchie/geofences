@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 
@@ -13,23 +15,38 @@ namespace Acr.Geofencing
         readonly GeofenceSettings settings;
         readonly IDictionary<string, GeofenceState> states;
         Position current;
+        DateTime? lastFix;
 
 
         public GeofenceManagerImpl(IGeolocator geolocator = null, GeofenceSettings settings = null)
         {
             this.geolocator = geolocator ?? CrossGeolocator.Current;
-            this.geolocator.AllowsBackgroundUpdates = true;
-            this.geolocator.PositionChanged += (sender, args) =>
-            {
-                this.current = new Position(args.Position.Latitude, args.Position.Longitude);
-                this.UpdateFences(args.Position.Latitude, args.Position.Longitude);
-            };
             this.settings = settings ?? GeofenceSettings.GetInstance();
             this.DesiredAccuracy = Distance.FromMeters(200);
 
             this.states = new Dictionary<string, GeofenceState>();
             if (this.settings.MonitoredRegions.Count > 0)
                 this.TryStartGeolocator();
+        }
+
+
+        public async Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null)
+        {
+            // TODO: what if my position is old?
+            if (this.current != null)
+                return region.IsInsideGeofence(this.current) ? GeofenceStatus.Entered : GeofenceStatus.Exited;
+
+            var tcs = new TaskCompletionSource<GeofenceStatus>();
+            cancelToken?.Register(() => tcs.TrySetCanceled());
+
+            try
+            {
+                return await tcs.Task;
+            }
+            finally
+            {
+
+            }
         }
 
 
@@ -55,7 +72,8 @@ namespace Acr.Geofencing
             var state = new GeofenceState(region);
             if (this.current != null)
             {
-                var inside = PositionUtils.IsInsideGeofence(region.Center, this.current, region.Radius);
+                // TODO: what if my position is old?
+                var inside = region.IsInsideGeofence(this.current);
                 state.Status = inside ? GeofenceStatus.Entered : GeofenceStatus.Exited;
             }
 
@@ -71,7 +89,7 @@ namespace Acr.Geofencing
             this.settings.Remove(region);
 
             if (!this.settings.MonitoredRegions.Any())
-                this.geolocator.StopListeningAsync();
+                this.StopGeolocator();
         }
 
 
@@ -82,11 +100,30 @@ namespace Acr.Geofencing
         }
 
 
-        protected void TryStartGeolocator()
+        protected async Task<bool> TryStartGeolocator()
         {
+            if (this.geolocator.IsListening)
+                return false;
+
+            this.geolocator.PositionChanged += this.OnPositionChanged;
             this.geolocator.AllowsBackgroundUpdates = true;
-            if (!this.geolocator.IsListening)
-                this.geolocator.StartListeningAsync(600, 200, false);
+            await this.geolocator.StartListeningAsync(600, 200, false);
+            return true;
+        }
+
+
+        protected void StopGeolocator()
+        {
+            this.geolocator.StopListeningAsync();
+            this.geolocator.PositionChanged -= this.OnPositionChanged;
+        }
+
+
+        protected void OnPositionChanged(object sender, PositionEventArgs args)
+        {
+            this.lastFix = DateTime.UtcNow;
+            this.current = new Position(args.Position.Latitude, args.Position.Longitude);
+            this.UpdateFences(args.Position.Latitude, args.Position.Longitude);
         }
 
 
@@ -96,7 +133,7 @@ namespace Acr.Geofencing
 
             foreach (var fence in this.states.Values)
             {
-                var newState = PositionUtils.IsInsideGeofence(fence.Region.Center, loc, fence.Region.Radius);
+                var newState = fence.Region.IsInsideGeofence(loc);
                 var status = newState ? GeofenceStatus.Entered : GeofenceStatus.Exited;
 
                 if (fence.Status == GeofenceStatus.Unknown)

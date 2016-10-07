@@ -12,6 +12,10 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <tags>geofences windows xamarin xam.pcl</tags>
         <releaseNotes>
+1.1.0
+[fix][ios] remove unnecessary dependency on RX
+[feature] add ability to request current state of geofence since event is not fired for unknown state transitioning into known state
+
 1.0.1
 [fix][droid] remember registered geofences on android
 

@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using CoreLocation;
 using UIKit;
 
@@ -25,6 +26,35 @@ namespace Acr.Geofencing
 
 
         public Distance DesiredAccuracy { get; set; } = Distance.FromKilometers(1);
+
+
+        public async Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken)
+        {
+            var tcs = new TaskCompletionSource<GeofenceStatus>();
+            cancelToken?.Register(() => tcs.TrySetCanceled());
+
+            var handler = new EventHandler<CLRegionStateDeterminedEventArgs>((sender, args) =>
+            {
+                var clregion = args.Region as CLCircularRegion;
+                if (clregion?.Identifier.Equals(region.Identifier) ?? false)
+                {
+                    var state = this.FromNative(args.State);
+                    tcs.TrySetResult(state);
+                }
+            });
+
+            try
+            {
+                this.locationManager.DidDetermineState += handler;
+                var native = this.ToNative(region);
+                this.locationManager.RequestState(native);
+                return await tcs.Task;
+            }
+            finally
+            {
+                this.locationManager.DidDetermineState -= handler;
+            }
+        }
 
 
         public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
@@ -102,6 +132,22 @@ namespace Acr.Geofencing
             };
         }
 
+
+        protected virtual GeofenceStatus FromNative(CLRegionState state)
+        {
+            switch (state)
+            {
+                case CLRegionState.Inside:
+                    return GeofenceStatus.Entered;
+
+                case CLRegionState.Outside:
+                    return GeofenceStatus.Exited;
+
+                case CLRegionState.Unknown:
+                default:
+                    return GeofenceStatus.Unknown;
+            }
+        }
 
         protected virtual Position FromNative(CLLocationCoordinate2D native)
         {

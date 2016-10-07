@@ -37,6 +37,7 @@
     <Compile Include="GeofenceManagerImpl.cs" />
     <Compile Include="GeofenceSettings.cs" />
     <Compile Include="GeofenceState.cs" />
+    <Compile Include="PositionUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
