@@ -3,7 +3,7 @@ using Acr.Geofencing;
 using Samples.Models;
 
 
-namespace Samples
+namespace Samples.ViewModels
 {
     public class GeofenceEventViewModel
     {

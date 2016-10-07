@@ -25,10 +25,9 @@ namespace Acr.Geofencing.Interfaces.Tests
 
             Assert.IsTrue(distance < Distance.FromKilometers(1), "Union station is less than a 1000 meters away");
             region
-                .IsInsideGeofence(current)
+                .IsPositionInside(current)
                 .Should()
                 .Be(true, "Union station is inside the 3km geofence from 88 Queen's Quay");
-
         }
 
 
@@ -44,7 +43,7 @@ namespace Acr.Geofencing.Interfaces.Tests
             };
 
             region
-                .IsInsideGeofence(current)
+                .IsPositionInside(current)
                 .Should()
                 .Be(false);
         }

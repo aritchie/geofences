@@ -2,14 +2,14 @@
 using System.Windows.Input;
 using Acr.Geofencing;
 
-namespace Samples
+namespace Samples.ViewModels
 {
     public class GeofenceViewModel
     {
         readonly GeofenceRegion region;
 
 
-        public GeofenceViewModel(GeofenceRegion region, ICommand removeCommand) 
+        public GeofenceViewModel(GeofenceRegion region, ICommand removeCommand)
         {
             this.Region = region;
             this.Remove = removeCommand;

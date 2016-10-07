@@ -43,6 +43,7 @@
     <Compile Include="GeofenceStatus.cs" />
     <Compile Include="IGeofenceManager.cs" />
     <Compile Include="Position.cs" />
+    <Compile Include="PositionUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

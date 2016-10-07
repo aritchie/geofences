@@ -33,19 +33,32 @@ namespace Acr.Geofencing
         public async Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null)
         {
             // TODO: what if my position is old?
+            if (this.states.ContainsKey(region.Identifier))
+                return this.states[region.Identifier].Status;
+
             if (this.current != null)
-                return region.IsInsideGeofence(this.current) ? GeofenceStatus.Entered : GeofenceStatus.Exited;
+                return region.IsPositionInside(this.current) ? GeofenceStatus.Entered : GeofenceStatus.Exited;
 
             var tcs = new TaskCompletionSource<GeofenceStatus>();
             cancelToken?.Register(() => tcs.TrySetCanceled());
 
+            var handler = new EventHandler<GeofenceStatusChangedEventArgs>((sender, args) =>
+            {
+                if (args.Region.Identifier.Equals(region.Identifier))
+                    tcs.TrySetResult(args.Status);
+            });
+
             try
             {
+                // this is not ideal since it fires the public event, though they were likely monitoring it anyhow
+                this.RegionStatusChanged += handler;
+                this.StartMonitoring(region);
                 return await tcs.Task;
             }
             finally
             {
-
+                this.StopMonitoring(region);
+                this.RegionStatusChanged -= handler;
             }
         }
 
@@ -73,7 +86,7 @@ namespace Acr.Geofencing
             if (this.current != null)
             {
                 // TODO: what if my position is old?
-                var inside = region.IsInsideGeofence(this.current);
+                var inside = region.IsPositionInside(this.current);
                 state.Status = inside ? GeofenceStatus.Entered : GeofenceStatus.Exited;
             }
 
@@ -133,7 +146,7 @@ namespace Acr.Geofencing
 
             foreach (var fence in this.states.Values)
             {
-                var newState = fence.Region.IsInsideGeofence(loc);
+                var newState = fence.Region.IsPositionInside(loc);
                 var status = newState ? GeofenceStatus.Entered : GeofenceStatus.Exited;
 
                 if (fence.Status == GeofenceStatus.Unknown)

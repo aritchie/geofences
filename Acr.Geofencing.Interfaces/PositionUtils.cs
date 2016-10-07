@@ -5,9 +5,9 @@ namespace Acr.Geofencing
 {
     public static class PositionUtils
     {
-        public static bool IsInsideGeofence(this GeofenceRegion region, Position current)
+        public static bool IsPositionInside(this GeofenceRegion region, Position position)
         {
-            var distance = region.Center.GetDistanceTo(current);
+            var distance = region.Center.GetDistanceTo(position);
             var inside = distance.TotalMeters <= region.Radius.TotalMeters;
             return inside;
         }
