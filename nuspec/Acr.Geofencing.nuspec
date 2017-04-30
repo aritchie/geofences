@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>Acr.Geofencing</id>
-        <version>1.1.0</version>
+        <version>2.0.0</version>
         <title>ACR Geofencing Plugin for Xamarin and Windows</title>
         <description>Geofencing Plugin for iOS, Android, and Windows</description>
         <authors>Allan Ritchie</authors>
@@ -12,6 +12,10 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <tags>geofences windows xamarin xam.pcl</tags>
         <releaseNotes>
+2.0
+nuget updates
+refactoring names of classes to match naming going forward
+
 1.1.0
 [fix][ios] remove unnecessary dependency on RX
 [feature] add ability to request current state of geofence since event is not fired for unknown state transitioning into known state
@@ -24,11 +28,11 @@ Initial Release
         </releaseNotes>
         <dependencies>
             <group targetFramework="MonoAndroid10">
-                <dependency id="Acr.Settings" version="[5.1.1, 6)" />
+                <dependency id="Acr.Settings" version="[6.0.1, 7)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
             </group>
             <group targetFramework="uap10.0">
-                <dependency id="Acr.Settings" version="[5.1.1, 6)" />
+                <dependency id="Acr.Settings" version="[6.0.1, 7)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
             </group>
         </dependencies>

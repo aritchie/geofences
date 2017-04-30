@@ -29,7 +29,7 @@ namespace Samples.ViewModels
             this.geofences = geofences;
             this.Reload = new Command(this.Load);
 
-            this.Clear = ReactiveCommand.CreateAsyncTask(async x =>
+            this.Clear = ReactiveCommand.CreateFromTask(async x =>
             {
                 var result = await dialogs.ConfirmAsync(new ConfirmConfig()
                    .UseYesNo()

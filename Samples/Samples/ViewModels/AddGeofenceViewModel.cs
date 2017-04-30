@@ -19,7 +19,17 @@ namespace Samples.ViewModels
                                     IViewModelManager viewModelMgr,
                                     IGeolocator geolocator)
         {
-            this.Add = ReactiveCommand.CreateAsyncTask(
+            this.Add = ReactiveCommand.CreateFromTask(
+                async x =>
+                {
+                    geofences.StartMonitoring(new GeofenceRegion
+                    {
+                        Identifier = this.Identifer,
+                        Center = new Position(this.Latitude, this.Longitude),
+                        Radius = Distance.FromMeters(this.RadiusMeters)
+                    });
+                    await viewModelMgr.PopNav();
+                },
                 this.WhenAny(
                     x => x.RadiusMeters,
                     x => x.Latitude,
@@ -41,19 +51,9 @@ namespace Samples.ViewModels
 
                         return true;
                     }
-                ),
-                async x =>
-                {
-                    geofences.StartMonitoring(new GeofenceRegion
-                    {
-                        Identifier = this.Identifer,
-                        Center = new Position(this.Latitude, this.Longitude),
-                        Radius = Distance.FromMeters(this.RadiusMeters)
-                    });
-                    await viewModelMgr.PopNav();
-                }
+                )
             );
-            this.UseCurrentLocation = ReactiveCommand.CreateAsyncTask(async x =>
+            this.UseCurrentLocation = ReactiveCommand.CreateFromTask(async x =>
             {
                 try
                 {

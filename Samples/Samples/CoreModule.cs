@@ -36,12 +36,12 @@ namespace Samples
                 .SingleInstance();
 
             builder
-                .Register(x => Geofences.Instance)
+                .Register(x => CrossGeofences.Current)
                 .As<IGeofenceManager>()
                 .SingleInstance();
 
             builder
-                .Register(x => Notifications.Instance)
+                .Register(x => CrossNotifications.Current)
                 .As<INotifications>()
                 .SingleInstance();
 

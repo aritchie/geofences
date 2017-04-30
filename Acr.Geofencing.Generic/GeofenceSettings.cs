@@ -24,7 +24,7 @@ namespace Acr.Geofencing
         }
 
 
-        static readonly Lazy<GeofenceSettings> instanceLazy = new Lazy<GeofenceSettings>(() => Acr.Settings.Settings.Local.Bind<GeofenceSettings>());
+        static readonly Lazy<GeofenceSettings> instanceLazy = new Lazy<GeofenceSettings>(() => Acr.Settings.Settings.Current.Bind<GeofenceSettings>());
         public static GeofenceSettings GetInstance()
         {
             return instanceLazy.Value;

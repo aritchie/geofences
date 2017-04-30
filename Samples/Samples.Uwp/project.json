@@ -1,17 +1,17 @@
 ﻿{
   "dependencies": {
-    "Acr.Notifications": "2.0.1",
-    "Acr.Settings": "5.1.1",
-    "Acr.UserDialogs": "6.1.2",
+    "Acr.Notifications": "3.1.2",
+    "Acr.Settings": "6.0.1",
+    "Acr.UserDialogs": "6.3.11",
     "Autofac": "3.5.2",
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
-    "Plugin.Permissions": "1.1.7",
-    "reactiveui": "6.5.0",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
+    "Plugin.Permissions": "1.2.1",
+    "reactiveui": "7.2.0",
     "Splat": "1.6.2",
     "SQLite.Net-PCL": "3.1.1",
     "SQLite.Net.Core-PCL": "3.1.1",
     "Xam.Plugin.Geolocator": "3.0.4",
-    "Xamarin.Forms": "2.3.1.114"
+    "Xamarin.Forms": "2.3.4.231"
   },
   "frameworks": {
     "uap10.0": {}
