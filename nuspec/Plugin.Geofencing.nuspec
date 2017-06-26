@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Acr.Geofencing</id>
+        <version>2.0.0</version>
+        <title>ACR Geofencing Plugin for Xamarin and Windows</title>
+        <description>Geofencing Plugin for iOS, Android, and Windows</description>
+        <authors>Allan Ritchie</authors>
+        <owners>Allan Ritchie</owners>
+        <licenseUrl>https://github.com/aritchie/geofences/blob/master/LICENSE.md</licenseUrl>
+        <projectUrl>https://github.com/aritchie/geofences</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <tags>geofences windows xamarin xam.pcl</tags>
+        <releaseNotes>
+2.0
+netstandard is here
+namespace moved from Acr.Geofencing to Plugin.Geofencing
+
+1.1.0
+[fix][ios] remove unnecessary dependency on RX
+[feature] add ability to request current state of geofence since event is not fired for unknown state transitioning into known state
+
+1.0.1
+[fix][droid] remember registered geofences on android
+
+1.0
+Initial Release
+        </releaseNotes>
+        <dependencies>
+            <group targetFramework="MonoAndroid10">
+                <dependency id="Acr.Settings" version="[6.0.1, 7)" />
+                <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
+            </group>
+            <group targetFramework="uap10.0">
+                <dependency id="Acr.Settings" version="[6.0.1, 7)" />
+                <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <!-- pcl -->
+        <file src="..\Acr.Geofencing\bin\Release\netstandard1.0\Acr.Geofencing.*" target="lib\netstandard1.0" />
+
+        <!-- android -->
+        <file src="..\Acr.Geofencing.Generic\bin\Release\Acr.Geofencing.*" target="lib\MonoAndroid10" />
+
+        <!-- ios -->
+        <file src="..\Acr.Geofencing.iOS\bin\iPhone\Release\Acr.Geofencing.*" target="lib\Xamarin.iOS10" />
+
+        <!-- uwp -->
+        <file src="..\Acr.Geofencing.Generic\bin\Release\Acr.Geofencing.*" target="lib\uap10.0" />
+
+    </files>
+</package>

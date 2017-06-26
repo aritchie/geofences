@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <AssemblyName>Plugin.Geofencing</AssemblyName>
+    <RootNamespace>Plugin.Geofencing</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xam.Plugin.Geolocator" Version="4.0.0.64-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Plugin.Geofencing.Abstractions\Plugin.Geofencing.Abstractions.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Plugin.Geofencing.Shared\Plugin.Geofencing.Shared.projitems" Label="Shared" />
+
+</Project>
