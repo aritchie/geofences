@@ -10,15 +10,7 @@ namespace Plugin.Geofencing
         public Distance Radius { get; set; }
 
 
-        public override bool Equals(object obj)
-        {
-            return this.Identifier.Equals(obj);
-        }
-
-
-        public override int GetHashCode()
-        {
-            return this.Identifier.GetHashCode();
-        }
+        public override bool Equals(object obj) => this.Identifier.Equals(obj);
+        public override int GetHashCode() => this.Identifier.GetHashCode();
     }
 }

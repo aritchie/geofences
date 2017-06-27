@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
-    <RootNamespace>Plugin.Geofencing</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard1.0</TargetFramework>
+        <RootNamespace>Plugin.Geofencing</RootNamespace>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
 
 </Project>

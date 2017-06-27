@@ -12,16 +12,16 @@ namespace Plugin.Geofencing
     public class GeofenceManagerImpl : IGeofenceManager
     {
         readonly IGeolocator geolocator;
-        readonly GeofenceSettings settings;
         readonly IDictionary<string, GeofenceState> states;
+        readonly AcrSqliteConnection conn;
         Position current;
         DateTime? lastFix;
 
 
-        public GeofenceManagerImpl(IGeolocator geolocator = null, GeofenceSettings settings = null)
+        public GeofenceManagerImpl(IGeolocator geolocator = null)
         {
             this.geolocator = geolocator ?? CrossGeolocator.Current;
-            this.settings = settings ?? GeofenceSettings.GetInstance();
+            this.conn = new AcrSqliteConnection();
             this.DesiredAccuracy = Distance.FromMeters(200);
 
             this.states = new Dictionary<string, GeofenceState>();
@@ -85,7 +85,7 @@ namespace Plugin.Geofencing
             }
 
             this.states.Add(region.Identifier, state);
-            this.settings.Add(region);
+            //this.settings.Add(region);
             this.TryStartGeolocator();
         }
 
@@ -93,16 +93,15 @@ namespace Plugin.Geofencing
         public void StopMonitoring(GeofenceRegion region)
         {
             this.states.Remove(region.Identifier);
-            this.settings.Remove(region);
+            //this.settings.Remove(region);
 
-            if (!this.settings.MonitoredRegions.Any())
-                this.StopGeolocator();
+            //if (!this.settings.MonitoredRegions.Any())
+            //    this.StopGeolocator();
         }
 
 
         public void StopAllMonitoring()
         {
-            this.settings.MonitoredRegions.Clear();
             this.states.Clear();
         }
 

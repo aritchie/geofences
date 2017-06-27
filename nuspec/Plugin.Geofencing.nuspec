@@ -13,8 +13,9 @@
         <tags>geofences windows xamarin xam.pcl</tags>
         <releaseNotes>
 2.0
-netstandard is here
-namespace moved from Acr.Geofencing to Plugin.Geofencing
+[feature] netstandard is here
+[feature] SQLite-net is now used for configuration storage
+[breaking] namespace moved from Acr.Geofencing to Plugin.Geofencing
 
 1.1.0
 [fix][ios] remove unnecessary dependency on RX
@@ -28,27 +29,25 @@ Initial Release
         </releaseNotes>
         <dependencies>
             <group targetFramework="MonoAndroid10">
-                <dependency id="Acr.Settings" version="[6.0.1, 7)" />
-                <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
+                <dependency id="sqlite-net-pcl" version="[1.3.3, 2)" />
+                <dependency id="Xam.Plugin.Geolocator" version="[4, 5)" />
             </group>
             <group targetFramework="uap10.0">
-                <dependency id="Acr.Settings" version="[6.0.1, 7)" />
-                <dependency id="Xam.Plugin.Geolocator" version="[3.0.4, 4)" />
+                <dependency id="sqlite-net-pcl" version="[1.3.3, 2)" />
+                <dependency id="Xam.Plugin.Geolocator" version="[4, 5)" />
             </group>
         </dependencies>
     </metadata>
     <files>
-        <!-- pcl -->
-        <file src="..\Acr.Geofencing\bin\Release\netstandard1.0\Acr.Geofencing.*" target="lib\netstandard1.0" />
-
-        <!-- android -->
-        <file src="..\Acr.Geofencing.Generic\bin\Release\Acr.Geofencing.*" target="lib\MonoAndroid10" />
+        <!-- netstandard -->
+        <file src="..\Plugin.Geofencing\bin\Release\netstandard1.0\Plugin.Geofencing.*" target="lib\netstandard1.0" />
 
         <!-- ios -->
-        <file src="..\Acr.Geofencing.iOS\bin\iPhone\Release\Acr.Geofencing.*" target="lib\Xamarin.iOS10" />
+        <file src="..\Plugin.Geofencing.iOS\bin\iPhone\Release\Acr.Geofencing.*" target="lib\Xamarin.iOS10" />
 
-        <!-- uwp -->
-        <file src="..\Acr.Geofencing.Generic\bin\Release\Acr.Geofencing.*" target="lib\uap10.0" />
+        <!-- generic - uwp & android -->
+        <file src="..\Plugin.Geofencing.Geolocator\bin\Release\netstandard1.1\Plugin.Geofencing.*" target="lib\MonoAndroid10" />
+        <file src="..\Plugin.Geofencing.Geolocator\bin\Release\netstandard1.1\Plugin.Geofencing.*" target="lib\uap10.0" />
 
     </files>
 </package>

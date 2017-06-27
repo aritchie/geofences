@@ -16,7 +16,7 @@ namespace Plugin.Geofencing
         double latitude;
         public double Latitude
         {
-            get { return this.latitude; }
+            get => this.latitude;
             set
             {
                 if (value < -90 || value > 90)
@@ -30,7 +30,7 @@ namespace Plugin.Geofencing
         double longitude;
         public double Longitude
         {
-            get { return this.longitude; }
+            get => this.longitude;
             set
             {
                 if (value < -180 || value > 180)
@@ -39,7 +39,6 @@ namespace Plugin.Geofencing
                 this.longitude = value;
             }
         }
-
 
 
         public Distance GetDistanceTo(Position other)
@@ -56,9 +55,6 @@ namespace Plugin.Geofencing
         }
 
 
-        public override string ToString()
-        {
-            return $"Latitude: {this.Latitude} - Longitude: {this.Longitude}";
-        }
+        public override string ToString() => $"Latitude: {this.Latitude} - Longitude: {this.Longitude}";
     }
 }
