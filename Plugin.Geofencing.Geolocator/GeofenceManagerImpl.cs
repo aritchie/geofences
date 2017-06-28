@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,8 +25,20 @@ namespace Plugin.Geofencing
             this.conn = new AcrSqliteConnection();
             this.DesiredAccuracy = Distance.FromMeters(200);
 
-            this.states = new Dictionary<string, GeofenceState>();
-            if (this.settings.MonitoredRegions.Count > 0)
+            this.states = this.conn
+                .GeofenceRegions
+                .Select(x => new GeofenceState(new GeofenceRegion
+                {
+                    Identifier = x.Identifier,
+                    Radius = Distance.FromMeters(x.CenterRadiusMeters),
+                    Center = new Position(x.CenterLatitude, x.CenterLongitude)
+                }))
+                .ToDictionary(
+                    x => x.Region.Identifier,
+                    x => x
+                );
+
+            if (this.states.Count > 0)
                 this.TryStartGeolocator();
         }
 
@@ -73,7 +86,9 @@ namespace Plugin.Geofencing
         }
 
 
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions => this.settings.MonitoredRegions.ToList();
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions => this.states.Values.Select(x => x.Region).ToList();
+
+
         public void StartMonitoring(GeofenceRegion region)
         {
             var state = new GeofenceState(region);
@@ -85,7 +100,16 @@ namespace Plugin.Geofencing
             }
 
             this.states.Add(region.Identifier, state);
-            //this.settings.Add(region);
+            var db = new DbGeofenceRegion
+            {
+                Identifier = region.Identifier,
+                CenterLatitude = region.Center.Latitude,
+                CenterLongitude = region.Center.Longitude,
+                CenterRadiusMeters = region.Radius.TotalMeters
+            };
+            this.conn.Insert(db);
+            this.states.Add(region.Identifier, new GeofenceState(region));
+
             this.TryStartGeolocator();
         }
 
@@ -93,16 +117,17 @@ namespace Plugin.Geofencing
         public void StopMonitoring(GeofenceRegion region)
         {
             this.states.Remove(region.Identifier);
-            //this.settings.Remove(region);
-
-            //if (!this.settings.MonitoredRegions.Any())
-            //    this.StopGeolocator();
+            this.conn.GeofenceRegions.Delete(x => x.Identifier == region.Identifier);
+            if (this.states.Any())
+                this.StopGeolocator();
         }
 
 
         public void StopAllMonitoring()
         {
             this.states.Clear();
+            this.conn.DeleteAll<DbGeofenceRegion>();
+            this.StopGeolocator();
         }
 
 
