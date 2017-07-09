@@ -13,7 +13,7 @@
         <tags>geofences windows xamarin xam.pcl</tags>
         <releaseNotes>This library has been moved to Plugin.Geofencing</releaseNotes>
         <dependencies>
-            <dependency id="Plugin.Geofencing" version="[3,)" />
+            <dependency id="Plugin.Geofencing" version="[2,)" />
         </dependencies>
     </metadata>
 </package>
