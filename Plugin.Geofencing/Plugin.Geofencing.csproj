@@ -13,4 +13,10 @@
         <DefineConstants>TRACE;DEBUG;BAIT</DefineConstants>
     </PropertyGroup>
 
+    <Import Project="..\Plugin.Geofencing.Shared\Plugin.Geofencing.Shared.projitems" Label="Shared" />
+
+    <ItemGroup>
+      <ProjectReference Include="..\Plugin.Geofencing.Abstractions\Plugin.Geofencing.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>

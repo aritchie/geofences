@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Plugin.Geofencing
 {
-
     public interface IGeofenceManager
     {
         /// <summary>
