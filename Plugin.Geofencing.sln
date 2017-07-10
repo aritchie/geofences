@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5B00BCAB-D8AA-4D9D-861F-5F758D3B1E64}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,19 +23,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{5A2C2356-A92
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Uwp", "samples\Samples.Uwp\Samples.Uwp.csproj", "{D27B7763-76AE-459A-8BA9-4079E3773E59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Geofencing", "Plugin.Geofencing\Plugin.Geofencing.csproj", "{82AB56BE-2DAF-4C8B-9775-D7BC90912E95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.Geofencing", "Plugin.Geofencing\Plugin.Geofencing.csproj", "{82AB56BE-2DAF-4C8B-9775-D7BC90912E95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Geofencing.Abstractions", "Plugin.Geofencing.Abstractions\Plugin.Geofencing.Abstractions.csproj", "{6E6F7F81-1C3B-4242-A628-22100CB47CFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.Geofencing.Abstractions", "Plugin.Geofencing.Abstractions\Plugin.Geofencing.Abstractions.csproj", "{6E6F7F81-1C3B-4242-A628-22100CB47CFF}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Plugin.Geofencing.Shared", "Plugin.Geofencing.Shared\Plugin.Geofencing.Shared.shproj", "{AD9D5D42-D649-4CCF-B571-394FD46D8DDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Geofencing.Geolocator", "Plugin.Geofencing.Geolocator\Plugin.Geofencing.Geolocator.csproj", "{A0071FD6-3AF4-42D6-B585-0360CE2F3FDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plugin.Geofencing.Geolocator", "Plugin.Geofencing.Geolocator\Plugin.Geofencing.Geolocator.csproj", "{A0071FD6-3AF4-42D6-B585-0360CE2F3FDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Geofencing.iOS", "Plugin.Geofencing.iOS\Plugin.Geofencing.iOS.csproj", "{A508D742-87F2-4AE3-97B2-031017675712}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Geofencing.Abstractions.Tests", "Plugin.Geofencing.Abstractions.Tests\Plugin.Geofencing.Abstractions.Tests.csproj", "{32A02C4A-4B7B-4BB5-87F9-D8B7C0B6A5C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Core", "Samples.Core\Samples.Core.csproj", "{7EA3D0D7-5D3C-49BF-AD4C-1735DBE167B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Samples.Core", "Samples.Core\Samples.Core.csproj", "{7EA3D0D7-5D3C-49BF-AD4C-1735DBE167B4}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
