@@ -1,43 +1,36 @@
 ﻿using System;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 
-namespace Plugin.Geofencing.Interfaces.Tests
+namespace Plugin.Geofencing.Abstractions.Tests
 {
-    [TestFixture]
     public class DistanceTests
     {
-        [Test]
-        public void MetersToKm()
-        {
+        [Fact]
+        public void MetersToKm() =>
             Distance
                 .FromMeters(2000)
                 .TotalKilometers
                 .Should()
                 .Be(2);
-        }
 
 
-        [Test]
-        public void MilesToKm()
-        {
+        [Fact]
+        public void MilesToKm() =>
             Distance
                 .FromMiles(2)
                 .TotalKilometers
                 .Should()
                 .Be(3.21868);
-        }
 
 
-        [Test]
-        public void KmToMiles()
-        {
+        [Fact]
+        public void KmToMiles() =>
             Distance
                 .FromKilometers(2)
                 .TotalMiles
                 .Should()
                 .Be(1.242742);
-        }
     }
 }

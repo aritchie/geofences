@@ -125,10 +125,10 @@
       <HintPath>..\..\packages\Xam.Plugin.Geolocator.4.0.1\lib\Xamarin.iOS10\Plugin.Geolocator.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Plugin.Notifications, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plugin.Notifications.4.0.0-beta1\lib\Xamarin.iOS10\Plugin.Notifications.dll</HintPath>
+      <HintPath>..\..\packages\Plugin.Notifications.4.0.1\lib\Xamarin.iOS10\Plugin.Notifications.dll</HintPath>
     </Reference>
     <Reference Include="Plugin.Notifications.Abstractions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Plugin.Notifications.4.0.0-beta1\lib\Xamarin.iOS10\Plugin.Notifications.Abstractions.dll</HintPath>
+      <HintPath>..\..\packages\Plugin.Notifications.4.0.1\lib\Xamarin.iOS10\Plugin.Notifications.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Plugin.Permissions, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Plugin.Permissions.2.0.1\lib\Xamarin.iOS10\Plugin.Permissions.dll</HintPath>

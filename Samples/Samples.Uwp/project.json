@@ -1,7 +1,7 @@
 ﻿{
   "dependencies": {
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
-    "Plugin.Notifications": "4.0.0-beta1",
+    "Plugin.Notifications": "4.0.1",
     "Plugin.Permissions": "2.0.1",
     "reactiveui": "7.5.0-alpha0030",
     "System.Reactive": "3.1.1",

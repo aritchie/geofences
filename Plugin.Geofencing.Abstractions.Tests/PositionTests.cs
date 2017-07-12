@@ -1,15 +1,13 @@
 ﻿using System;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 
-namespace Plugin.Geofencing.Interfaces.Tests
+namespace Plugin.Geofencing.Abstractions.Tests
 {
-    [TestFixture]
     public class PositionTests
     {
-
-        [Test]
+        [Fact]
         public void Inside_Geofence()
         {
             var current = new Position(43.6429228, -79.3789959); // union station
@@ -23,7 +21,7 @@ namespace Plugin.Geofencing.Interfaces.Tests
                 Radius = Distance.FromKilometers(3)
             };
 
-            Assert.IsTrue(distance < Distance.FromKilometers(1), "Union station is less than a 1000 meters away");
+            Assert.True(distance < Distance.FromKilometers(1), "Union station is less than a 1000 meters away");
             region
                 .IsPositionInside(current)
                 .Should()
@@ -31,7 +29,7 @@ namespace Plugin.Geofencing.Interfaces.Tests
         }
 
 
-        [Test]
+        [Fact]
         public void Outside_Geofence()
         {
             var center = new Position(43.6411314, -79.3808415); // 88 queen's quay
