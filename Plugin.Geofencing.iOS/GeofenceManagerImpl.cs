@@ -123,14 +123,12 @@ namespace Plugin.Geofencing
 
 
         protected virtual GeofenceRegion FromNative(CLCircularRegion native)
-        {
-            return new GeofenceRegion
+            => new GeofenceRegion
             {
                 Identifier = native.Identifier,
                 Center = this.FromNative(native.Center),
                 Radius = Distance.FromMeters(native.Radius)
             };
-        }
 
 
         protected virtual GeofenceStatus FromNative(CLRegionState state)
@@ -149,16 +147,13 @@ namespace Plugin.Geofencing
             }
         }
 
+
         protected virtual Position FromNative(CLLocationCoordinate2D native)
-        {
-            return new Position(native.Latitude, native.Longitude);
-        }
+            => new Position(native.Latitude, native.Longitude);
 
 
         protected virtual CLLocationCoordinate2D ToNative(Position position)
-        {
-            return new CLLocationCoordinate2D(position.Latitude, position.Longitude);
-        }
+            => new CLLocationCoordinate2D(position.Latitude, position.Longitude);
 
 
         protected virtual CLCircularRegion ToNative(GeofenceRegion region)
