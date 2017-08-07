@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Plugin.Notifications" Version="4.0.1" />
+    <PackageReference Include="Plugin.Notifications" Version="4.0.2" />
     <PackageReference Include="Plugin.Permissions" Version="2.0.1" />
-    <PackageReference Include="reactiveui" Version="7.5.0-alpha0030" />
+    <PackageReference Include="reactiveui" Version="8.0.0-alpha0034" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.0.1" />
-    <PackageReference Include="Xamarin.Forms" Version="2.3.5.253-pre5" />
+    <PackageReference Include="Xamarin.Forms" Version="2.3.5.256-pre6" />
   </ItemGroup>
 
   <ItemGroup>

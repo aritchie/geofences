@@ -1,12 +1,12 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
-    "Plugin.Notifications": "4.0.1",
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.4",
+    "Plugin.Notifications": "4.0.2",
     "Plugin.Permissions": "2.0.1",
-    "reactiveui": "7.5.0-alpha0030",
+    "reactiveui": "8.0.0-alpha0034",
     "System.Reactive": "3.1.1",
     "Xam.Plugin.Geolocator": "4.0.1",
-    "Xamarin.Forms": "2.3.5.253-pre5"
+    "Xamarin.Forms": "2.3.5.256-pre6"
   },
   "frameworks": {
     "uap10.0": {}
