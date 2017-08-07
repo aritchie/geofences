@@ -214,6 +214,20 @@
     <AndroidResource Include="Resources\values\style.xml" />
     <AndroidResource Include="Resources\values-v21\style.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Plugin.Geofencing.Abstractions\Plugin.Geofencing.Abstractions.csproj">
+      <Project>{6E6F7F81-1C3B-4242-A628-22100CB47CFF}</Project>
+      <Name>Plugin.Geofencing.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Plugin.Geofencing.Geolocator\Plugin.Geofencing.Geolocator.csproj">
+      <Project>{A0071FD6-3AF4-42D6-B585-0360CE2F3FDE}</Project>
+      <Name>Plugin.Geofencing.Geolocator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Samples.Core\Samples.Core.csproj">
+      <Project>{7EA3D0D7-5D3C-49BF-AD4C-1735DBE167B4}</Project>
+      <Name>Samples.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

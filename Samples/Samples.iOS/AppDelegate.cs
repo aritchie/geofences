@@ -1,5 +1,4 @@
 ﻿using System;
-using Autofac;
 using Foundation;
 using UIKit;
 using Xamarin.Forms;
@@ -14,11 +13,7 @@ namespace Samples.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Forms.Init();
-
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(new PlatformModule());
-            var container = builder.Build();
-            this.LoadApplication(new App(container));
+            this.LoadApplication(new App());
 
             //UIApplication.SharedApplication.IdleTimerDisabled = false;
             return base.FinishedLaunching(app, options);

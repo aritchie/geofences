@@ -23,9 +23,18 @@ namespace Samples
                 this.CenterLatitude = current.Center.Latitude;
                 this.CenterLongitude = current.Center.Longitude;
                 this.DistanceMeters = current.Radius.TotalMeters;
+                this.HasGeofence = true;
             }
 
-            this.RemoveAllGeofences = ReactiveCommand.Create(this.geofences.StopAllMonitoring);
+            this.StopGeofence = ReactiveCommand.Create(() =>
+            {
+                this.geofences.StopAllMonitoring();
+                this.HasGeofence = false;
+            },
+            this.WhenAny(
+                x => x.HasGeofence,
+                x => x.Value
+            ));
 
             this.SetGeofence = ReactiveCommand.Create(() =>
             {
@@ -36,12 +45,14 @@ namespace Samples
                     Radius = Distance.FromMeters(this.DistanceMeters.Value),
                     Center = new Plugin.Geofencing.Position(this.CenterLongitude.Value, this.CenterLatitude.Value)
                 });
+                this.HasGeofence = true;
             },
             this.WhenAny(
                 x => x.CenterLatitude,
                 x => x.CenterLongitude,
                 x => x.DistanceMeters,
-                (latitude, longitude, dist) =>
+                x => x.HasGeofence,
+                (latitude, longitude, dist, hasGeo) =>
                     latitude.Value > -180 &&
                     latitude.Value < 180 &&
                     longitude.Value > -90 &&
@@ -63,7 +74,6 @@ namespace Samples
                 }
                 catch (Exception ex)
                 {
-
                 }
             });
         }
@@ -71,7 +81,15 @@ namespace Samples
 
         public ICommand SetGeofence { get; }
         public ICommand UseCurrentGps { get; }
-        public ICommand RemoveAllGeofences { get; }
+        public ICommand StopGeofence { get; }
+
+
+        bool hasGeofence;
+        public bool HasGeofence 
+        {
+            get => this.hasGeofence;
+            set => this.RaiseAndSetIfChanged(ref this.hasGeofence, value);
+        }
 
 
         double? lat;
@@ -90,7 +108,7 @@ namespace Samples
         }
 
 
-        double? meters;
+        double? meters = 200;
         public double? DistanceMeters
         {
             get => this.meters;

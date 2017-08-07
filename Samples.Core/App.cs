@@ -19,11 +19,14 @@ namespace Samples
             var lng = new EntryCell { Label = "Center Lng" };
             lng.SetBinding(EntryCell.TextProperty, "CenterLongitude", converter: new DoubleConverter());
 
-            var radius = new EntryCell { Label = "Radius" };
-            radius.SetBinding(EntryCell.TextProperty, "Radius", converter: new DoubleConverter());
+            var radius = new EntryCell { Label = "Radius (meters)" };
+            radius.SetBinding(EntryCell.TextProperty, "DistanceMeters", converter: new DoubleConverter());
 
             var btn = new TextCell { Text = "Set Geofence" };
             btn.SetBinding(TextCell.CommandProperty, "SetGeofence");
+
+            var btnStop = new TextCell { Text = "Stop Geofence" };
+            btnStop.SetBinding(TextCell.CommandProperty, "StopGeofence");
 
             this.MainPage = new NavigationPage(new ContentPage
             {
@@ -33,19 +36,17 @@ namespace Samples
                 {
                     Root = new TableRoot
                     {
-                        new TableSection
-                        {
-                            current
-                        },
-                        new TableSection
+                        new TableSection("Details")
                         {
                             lat,
                             lng,
                             radius
                         },
-                        new TableSection
+                        new TableSection("Actions")
                         {
-                            btn
+                            current,
+                            btn,
+                            btnStop
                         }
                     }
                 }
