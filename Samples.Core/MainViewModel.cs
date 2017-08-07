@@ -5,6 +5,7 @@ using Plugin.Geofencing;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using ReactiveUI;
+using Acr.UserDialogs;
 
 
 namespace Samples
@@ -61,11 +62,23 @@ namespace Samples
                     dist.Value < 3000
             ));
 
+            this.RequestStatus = ReactiveCommand.CreateFromTask(async ct =>
+            {
+                var region = this.geofences.MonitoredRegions.First();
+                var result = await this.geofences.RequestState(region, ct);
+                UserDialogs.Instance.Alert("Geofence Status: " + result.ToString(), "Status");
+            },
+            this.WhenAny(
+                x => x.HasGeofence,
+                x => x.Value
+            ));
+
+
             this.UseCurrentGps = ReactiveCommand.CreateFromTask(async ct =>
             {
                 try
                 {
-                    var pos = await this.gps.GetPositionAsync(token: ct);
+                    var pos = await this.gps.GetPositionAsync(token: ct).ConfigureAwait(false);
                     if (pos != null)
                     {
                         this.CenterLatitude = pos.Latitude;
@@ -82,6 +95,7 @@ namespace Samples
         public ICommand SetGeofence { get; }
         public ICommand UseCurrentGps { get; }
         public ICommand StopGeofence { get; }
+        public ICommand RequestStatus { get; }
 
 
         bool hasGeofence;

@@ -28,6 +28,9 @@ namespace Samples
             var btnStop = new TextCell { Text = "Stop Geofence" };
             btnStop.SetBinding(TextCell.CommandProperty, "StopGeofence");
 
+            var btnStatus = new TextCell { Text = "Request Current Status" };
+            btnStatus.SetBinding(TextCell.CommandProperty, "RequestStatus");
+
             this.MainPage = new NavigationPage(new ContentPage
             {
                 Title = "ACR Geofencing",
@@ -46,7 +49,8 @@ namespace Samples
                         {
                             current,
                             btn,
-                            btnStop
+                            btnStop,
+                            btnStatus
                         }
                     }
                 }

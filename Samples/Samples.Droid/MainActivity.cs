@@ -1,4 +1,5 @@
 ﻿using System;
+using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -24,6 +25,7 @@ namespace Samples.Droid
 
             base.OnCreate(bundle);
 
+            UserDialogs.Init(() => (Activity)Forms.Context);
             Forms.Init(this, bundle);
             this.LoadApplication(new App());
         }
