@@ -1,4 +1,5 @@
 ﻿using System;
+using Acr.UserDialogs;
 using Plugin.Geofencing;
 using Plugin.Notifications;
 using Xamarin.Forms;
@@ -62,11 +63,18 @@ namespace Samples
         {
             base.OnStart();
             CrossGeofences.Current.RegionStatusChanged += (sender, args) =>
+            {
+                var msg = $"Geofence status for {args.Region.Identifier} changed to {args.Status}";
                 CrossNotifications.Current.Send(new Notification
                 {
                     Title = "Geofence Update",
-                    Message = $"Geofence status for {args.Region.Identifier} changed to {args.Status}"
+                    Message = msg
                 });
+                try {
+                    UserDialogs.Instance.Alert(msg, "Geofence Update");
+                }
+                catch {} // catch and release
+            };
         }
     }
 }
