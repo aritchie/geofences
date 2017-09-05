@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Plugin.Notifications" Version="4.0.2" />
     <PackageReference Include="Plugin.Permissions" Version="2.0.1" />
-    <PackageReference Include="reactiveui" Version="8.0.0-alpha0034" />
+    <PackageReference Include="reactiveui" Version="8.0.0-alpha0073" />
     <PackageReference Include="System.Reactive" Version="3.1.1" />
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.0.1" />
     <PackageReference Include="Acr.UserDialogs" Version="6.5.1" />
