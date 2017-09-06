@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>Acr.Geofencing</id>
+        <id>Plugin.Geofencing</id>
         <version>2.0.0</version>
         <title>ACR Geofencing Plugin for Xamarin and Windows</title>
         <description>Geofencing Plugin for iOS, Android, and Windows</description>
@@ -32,7 +32,7 @@ Initial Release
                 <dependency id="sqlite-net-pcl" version="[1.4.118, 2)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[4, 5)" />
             </group>
-            <group targetFramework="netstandard1.1">
+            <group targetFramework="uap10.0">
                 <dependency id="sqlite-net-pcl" version="[1.4.118, 2)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[4, 5)" />
             </group>
@@ -40,14 +40,16 @@ Initial Release
     </metadata>
     <files>
         <!-- netstandard -->
-        <file src="..\Plugin.Geofencing\bin\Release\netstandard1.0\Plugin.Geofencing.*" target="lib\netstandard1.0" />
+        <file src="..\Plugin.Geofencing\bin\Release\netstandard1.1\Plugin.Geofencing.*" target="lib\netstandard1.0" />
 
         <!-- ios -->
         <file src="..\Plugin.Geofencing.iOS\bin\iPhone\Release\Plugin.Geofencing.*" target="lib\Xamarin.iOS10" />
 
-        <!-- generic - uwp, mac, tvOS, & android -->
-        <file src="..\Plugin.Geofencing.Geolocator\bin\Release\netstandard1.1\Plugin.Geofencing.*" target="lib\MonoAndroid10" />
-        <file src="..\Plugin.Geofencing.Geolocator\bin\Release\netstandard1.1\Plugin.Geofencing.*" target="lib\uap10.0" />
+        <!-- android  -->
+        <file src="..\Plugin.Geofencing.Android\bin\Release\Plugin.Geofencing.*" target="lib\MonoAndroid10" />
+
+        <!-- uwp  -->
+        <file src="..\Plugin.Geofencing.Uwp\bin\Release\Plugin.Geofencing.*" target="lib\uap10.0" />
 
     </files>
 </package>
