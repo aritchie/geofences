@@ -42,12 +42,11 @@ namespace Samples
             this.SetGeofence = ReactiveCommand.Create(() =>
             {
                 this.geofences.StopAllMonitoring();
-                this.geofences.StartMonitoring(new GeofenceRegion
-                {
-                    Identifier = "plugintest",
-                    Radius = Distance.FromMeters(this.DistanceMeters.Value),
-                    Center = new Plugin.Geofencing.Position(this.CenterLongitude.Value, this.CenterLatitude.Value)
-                });
+
+                var radius = Distance.FromMeters(this.DistanceMeters.Value);
+                var center = new Plugin.Geofencing.Position(this.CenterLatitude.Value, this.CenterLongitude.Value);
+
+                this.geofences.StartMonitoring(new GeofenceRegion("plugintest", center, radius));
                 this.HasGeofence = true;
             },
             this.WhenAny(
@@ -56,14 +55,34 @@ namespace Samples
                 x => x.DistanceMeters,
                 x => x.HasGeofence,
                 (latitude, longitude, dist, hasGeo) =>
-                    latitude.Value > -180 &&
-                    latitude.Value < 180 &&
-                    longitude.Value > -90 &&
-                    longitude.Value < 90 &&
+                    latitude.Value > -90 &&
+                    latitude.Value < 90 &&
+                    longitude.Value > -180 &&
+                    longitude.Value < 180 &&
                     dist.Value > 0 &&
                     dist.Value < 3000 &&
                     !hasGeo.Value
             ));
+            //this.WhenAny(
+            //        x => x.CenterLatitude,
+            //        x => x.CenterLongitude,
+            //        x => x.DistanceMeters,
+            //        x => x.HasGeofence,
+            //        (latitude, longitude, dist, hasGeo) =>
+            //            latitude.Value > -180 &&
+            //            latitude.Value < 180 &&
+            //            longitude.Value > -90 &&
+            //            longitude.Value < 90 &&
+            //            dist.Value > 0 &&
+            //            dist.Value < 3000 &&
+            //            !hasGeo.Value
+            //    )
+            //    .Subscribe(x =>
+            //    {
+            //        var msg = $"LAT: {this.CenterLatitude} - LNG: {this.CenterLongitude} - D: {this.DistanceMeters} - HG: {this.HasGeofence}";
+            //        UserDialogs.Instance.Alert(msg);
+            //    });
+
 
             this.RequestStatus = ReactiveCommand.CreateFromTask(async ct =>
             {

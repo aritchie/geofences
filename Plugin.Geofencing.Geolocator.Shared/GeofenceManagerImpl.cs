@@ -25,18 +25,16 @@ namespace Plugin.Geofencing
             this.conn = new AcrSqliteConnection();
             this.DesiredAccuracy = Distance.FromMeters(200);
 
-            this.states = this.conn
-                .GeofenceRegions
-                .Select(x => new GeofenceState(new GeofenceRegion
-                {
-                    Identifier = x.Identifier,
-                    Radius = Distance.FromMeters(x.CenterRadiusMeters),
-                    Center = new Position(x.CenterLatitude, x.CenterLongitude)
-                }))
-                .ToDictionary(
-                    x => x.Region.Identifier,
-                    x => x
-                );
+            this.states = new Dictionary<string, GeofenceState>();
+            var list = this.conn.GeofenceRegions.ToList();
+            foreach (var item in list)
+            {
+                var radius = Distance.FromMeters(item.CenterRadiusMeters);
+                var center = new Position(item.CenterLatitude, item.CenterLongitude);
+                var region = new GeofenceRegion(item.Identifier, center, radius);
+                var state = new GeofenceState(region);
+                this.states.Add(item.Identifier, state);
+            }
 
             if (this.states.Count > 0)
                 this.TryStartGeolocator();
