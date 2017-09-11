@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Plugin.Geofencing</RootNamespace>
-    <AssemblyName>Plugin.Geofencing.Android</AssemblyName>
+    <AssemblyName>Plugin.Geofencing</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -63,7 +63,7 @@
   <Import Project="..\Plugin.Geofencing.Shared\Plugin.Geofencing.Shared.projitems" Label="Shared" />
   <Import Project="..\Plugin.Geofencing.Geolocator.Shared\Plugin.Geofencing.Geolocator.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

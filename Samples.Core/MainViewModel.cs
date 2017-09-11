@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using Plugin.Geofencing;
 using Plugin.Geolocator;
 using Plugin.Geolocator.Abstractions;
 using ReactiveUI;
 using Acr.UserDialogs;
+using Xamarin.Forms;
 
 
 namespace Samples
@@ -59,13 +61,14 @@ namespace Samples
                     longitude.Value > -90 &&
                     longitude.Value < 90 &&
                     dist.Value > 0 &&
-                    dist.Value < 3000
+                    dist.Value < 3000 &&
+                    !hasGeo.Value
             ));
 
             this.RequestStatus = ReactiveCommand.CreateFromTask(async ct =>
             {
                 var region = this.geofences.MonitoredRegions.First();
-                var result = await this.geofences.RequestState(region, ct);
+                var result = await this.geofences.RequestState(region, ct).ConfigureAwait(false);
                 UserDialogs.Instance.Alert("Geofence Status: " + result.ToString(), "Status");
             },
             this.WhenAny(
@@ -81,12 +84,16 @@ namespace Samples
                     var pos = await this.gps.GetPositionAsync(token: ct).ConfigureAwait(false);
                     if (pos != null)
                     {
-                        this.CenterLatitude = pos.Latitude;
-                        this.CenterLongitude = pos.Longitude;
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            this.CenterLatitude = pos.Latitude;
+                            this.CenterLongitude = pos.Longitude;
+                        });
                     }
                 }
                 catch (Exception ex)
                 {
+                    UserDialogs.Instance.Alert("Error getting current location - " + ex);
                 }
             });
         }
@@ -99,7 +106,7 @@ namespace Samples
 
 
         bool hasGeofence;
-        public bool HasGeofence 
+        public bool HasGeofence
         {
             get => this.hasGeofence;
             set => this.RaiseAndSetIfChanged(ref this.hasGeofence, value);
