@@ -28,11 +28,16 @@
 Initial Release
         </releaseNotes>
         <dependencies>
+            <group targetFramework="Xamarin.iOS10">
+                <dependency id="NETStandard.Library" version="[1.6.1,)" />
+            </group>
             <group targetFramework="MonoAndroid10">
+                <dependency id="NETStandard.Library" version="[1.6.1,)" />
                 <dependency id="sqlite-net-pcl" version="[1.4.118, 2)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[4, 5)" />
             </group>
             <group targetFramework="uap10.0">
+                <dependency id="NETStandard.Library" version="[1.6.1,)" />
                 <dependency id="sqlite-net-pcl" version="[1.4.118, 2)" />
                 <dependency id="Xam.Plugin.Geolocator" version="[4, 5)" />
             </group>
