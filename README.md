@@ -12,7 +12,7 @@ A cross platform library for Xamarin & Windows that allows for easy geofence det
 
 ## SETUP
 
-Be sure to install the Plugin.BluetoothLE nuget package in all of your main platform projects as well as your core/NETStandard project
+Be sure to install the Plugin.Geofencing nuget package in all of your main platform projects as well as your core/NETStandard project
 
 [![NuGet](https://img.shields.io/nuget/v/Plugin.Geofencing.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Geofencing/)
 
@@ -48,16 +48,15 @@ Add location to your app manifest capabilities section
 
 ### To start monitoring
 
-    Geofences.Instance.StartMonitoring(new GeofenceRegion 
-    {
-        Identifier = "My House",
-        Radius = Distance.FromKilometers(1),
-        Center = new Position(LATITUDE, LONGITUDE)
-    });
+    CrossGeofences.Current.StartMonitoring(new GeofenceRegion( 
+        "My House", // identifier - must be unique per registered geofence
+        Center = new Position(LATITUDE, LONGITUDE), // center point    
+        Distance.FromKilometers(1) // radius of fence
+    ));
 
 ### Wire up to notifications
 
-    Geofences.Instance.RegionStatusChanged += (sender, args) => 
+    CrossGeofences.Current.RegionStatusChanged += (sender, args) => 
     {
         args.State // entered or exited
         args.Region // Identifier & details
@@ -65,28 +64,11 @@ Add location to your app manifest capabilities section
 
 ### Stop monitoring a region
     
-    Geofences.Instance.StopMonitoring(GeofenceRegion);
+    CrossGeofences.Current.StopMonitoring(GeofenceRegion);
 
     or
 
-    Geofences.Instance.StopAllMonitoring();
-
-## SETUP
-
-### Android
-
-    Add the following permissions to your app manifest OR request permissions for v6.0
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    android.permission.ACCESS_FINE_LOCATION
-    android.permission.ACCESS_COARSE_LOCATION
-    com.google.android.providers.gsf.permission.READ_GSERVICES
-    android.permission.RECEIVE_BOOT_COMPLETED
-
-### iOS
-
-    Add the following to your Info.plist
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Can we use your location</string>
+    CrossGeofences.Current.StopAllMonitoring();
 
 
 ### FAQ
@@ -95,8 +77,12 @@ Add location to your app manifest capabilities section
 
   A) I felt like the integration or bloat in other geofence libraries (stay, notifications, etc). I also didn't like that Google Play Services were required in Android which required your device to be online when creating the geofences.  This did not work with my requirements
 
-* Q) Why use a cross platform GPS library for Android only
+* Q) Why use a cross platform GPS library for Android?
   
   A) James has done a ton of work around the Android geolocation mess.  I didn't want to duplicate this.  I just wanted to attach to an event and set the desired accuracy
+
+* Q) Yes, but what about google play services?
+
+  A) The amount of code necessary to register a geofence as well as all of the junk that came with it made it annoying and no less of a drain on the battery
 
 
