@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +15,6 @@ namespace Plugin.Geofencing
         readonly IDictionary<string, GeofenceState> states;
         readonly AcrSqliteConnection conn;
         Position current;
-        DateTime? lastFix;
 
 
         public GeofenceManagerImpl(IGeolocator geolocator = null)
@@ -89,6 +87,9 @@ namespace Plugin.Geofencing
 
         public void StartMonitoring(GeofenceRegion region)
         {
+            if (this.states.ContainsKey(region.Identifier))
+                throw new ArgumentException($"Region identifier '{region.Identifier}' is already in use ");
+
             var state = new GeofenceState(region);
             if (this.current != null)
             {
@@ -98,15 +99,13 @@ namespace Plugin.Geofencing
             }
 
             this.states.Add(region.Identifier, state);
-            var db = new DbGeofenceRegion
+            this.conn.Insert(new DbGeofenceRegion
             {
                 Identifier = region.Identifier,
                 CenterLatitude = region.Center.Latitude,
                 CenterLongitude = region.Center.Longitude,
                 CenterRadiusMeters = region.Radius.TotalMeters
-            };
-            this.conn.Insert(db);
-            this.states.Add(region.Identifier, new GeofenceState(region));
+            });
 
             this.TryStartGeolocator();
         }
@@ -149,7 +148,6 @@ namespace Plugin.Geofencing
 
         protected void OnPositionChanged(object sender, PositionEventArgs args)
         {
-            this.lastFix = DateTime.UtcNow;
             this.current = new Position(args.Position.Latitude, args.Position.Longitude);
             this.UpdateFences(args.Position.Latitude, args.Position.Longitude);
         }

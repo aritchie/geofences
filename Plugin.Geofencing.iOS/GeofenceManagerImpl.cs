@@ -123,12 +123,11 @@ namespace Plugin.Geofencing
 
 
         protected virtual GeofenceRegion FromNative(CLCircularRegion native)
-            => new GeofenceRegion
-            {
-                Identifier = native.Identifier,
-                Center = this.FromNative(native.Center),
-                Radius = Distance.FromMeters(native.Radius)
-            };
+        {
+            var radius = Distance.FromMeters(native.Radius);
+            var center = this.FromNative(native.Center);
+            return new GeofenceRegion(native.Identifier, center, radius);
+        }
 
 
         protected virtual GeofenceStatus FromNative(CLRegionState state)

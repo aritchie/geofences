@@ -41,13 +41,22 @@ namespace Samples
 
             this.SetGeofence = ReactiveCommand.Create(() =>
             {
-                this.geofences.StopAllMonitoring();
+                try
+                {
+                    this.geofences.StopAllMonitoring();
 
-                var radius = Distance.FromMeters(this.DistanceMeters.Value);
-                var center = new Plugin.Geofencing.Position(this.CenterLatitude.Value, this.CenterLongitude.Value);
+                    var radius = Distance.FromMeters(this.DistanceMeters.Value);
+                    var center = new Plugin.Geofencing.Position(this.CenterLatitude.Value, this.CenterLongitude.Value);
 
-                this.geofences.StartMonitoring(new GeofenceRegion("plugintest", center, radius));
-                this.HasGeofence = true;
+                    this.geofences.StartMonitoring(new GeofenceRegion("plugintest", center, radius));
+                    this.HasGeofence = true;
+
+                    UserDialogs.Instance.Alert("Geofence set");
+                }
+                catch (Exception ex)
+                {
+                    UserDialogs.Instance.Alert(ex.ToString());
+                }
             },
             this.WhenAny(
                 x => x.CenterLatitude,

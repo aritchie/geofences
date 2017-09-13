@@ -14,13 +14,7 @@ namespace Plugin.Geofencing.Abstractions.Tests
             var center = new Position(43.6411314, -79.3808415); // 88 queen's quay
             var distance = center.GetDistanceTo(current);
 
-            var region = new GeofenceRegion
-            {
-                Center = center,
-                Identifier = "test",
-                Radius = Distance.FromKilometers(3)
-            };
-
+            var region = new GeofenceRegion("test", center, Distance.FromKilometers(3));
             Assert.True(distance < Distance.FromKilometers(1), "Union station is less than a 1000 meters away");
             region
                 .IsPositionInside(current)
@@ -34,11 +28,7 @@ namespace Plugin.Geofencing.Abstractions.Tests
         {
             var center = new Position(43.6411314, -79.3808415); // 88 queen's quay
             var current = new Position(43.6515754, -79.3492364); // random point outside fence
-            var region = new GeofenceRegion
-            {
-                Center = center,
-                Radius = Distance.FromKilometers(2)
-            };
+            var region = new GeofenceRegion("test", center, Distance.FromKilometers(2));
 
             region
                 .IsPositionInside(current)
