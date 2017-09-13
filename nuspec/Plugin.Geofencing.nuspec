@@ -45,10 +45,10 @@ Initial Release
     </metadata>
     <files>
         <!-- netstandard -->
-        <file src="..\Plugin.Geofencing\bin\Release\netstandard1.1\Plugin.Geofencing.*" target="lib\netstandard1.0" />
+        <file src="..\Plugin.Geofencing\bin\Release\netstandard1.0\Plugin.Geofencing.*" target="lib\netstandard1.0" />
 
         <!-- ios -->
-        <file src="..\Plugin.Geofencing.iOS\bin\iPhone\Release\Plugin.Geofencing.*" target="lib\Xamarin.iOS10" />
+        <file src="..\Plugin.Geofencing.iOS\bin\Release\Plugin.Geofencing.*" target="lib\Xamarin.iOS10" />
 
         <!-- android  -->
         <file src="..\Plugin.Geofencing.Android\bin\Release\Plugin.Geofencing.*" target="lib\MonoAndroid10" />
