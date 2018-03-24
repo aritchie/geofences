@@ -6,6 +6,7 @@ A cross platform library for Xamarin & Windows that allows for easy geofence det
 
 |Platform|Version|
 | ------------------- |:------------------: |
+|.NET Standard|v1 & 2|
 |Xamarin.iOS|iOS 6+|
 |Xamarin.Android|API 10+|
 |Windows 10 UWP|10+|
