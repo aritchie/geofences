@@ -20,7 +20,6 @@ namespace Plugin.Geofencing
         void StartMonitoring(GeofenceRegion region);
         void StopMonitoring(GeofenceRegion region);
         void StopAllMonitoring();
-        Distance DesiredAccuracy { get; set; }
 
         /// <summary>
         /// This will request the current status of a geofence region

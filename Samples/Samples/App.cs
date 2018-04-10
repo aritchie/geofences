@@ -1,7 +1,5 @@
 ﻿using System;
-using Acr.UserDialogs;
 using Plugin.Geofencing;
-using Plugin.Notifications;
 using Xamarin.Forms;
 
 
@@ -35,7 +33,7 @@ namespace Samples
             this.MainPage = new NavigationPage(new ContentPage
             {
                 Title = "ACR Geofencing",
-                BindingContext = new MainViewModel(),
+                //BindingContext = new MainViewModel(),
                 Content = new TableView
                 {
                     Root = new TableRoot

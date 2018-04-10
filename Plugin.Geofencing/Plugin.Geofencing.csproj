@@ -2,15 +2,16 @@
 
     <PropertyGroup>
         <TargetFrameworks></TargetFrameworks>
-        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">netstandard1.0;netstandard2.0;MonoAndroid70;MonoAndroid80;Xamarin.iOS10;uap10.0</TargetFrameworks>
-        <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard1.0;netstandard2.0;MonoAndroid70;MonoAndroid80;Xamarin.iOS10</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">netstandard2.0;MonoAndroid70;MonoAndroid80;Xamarin.iOS10;uap10.0</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard2.0;MonoAndroid70;MonoAndroid80;Xamarin.iOS10</TargetFrameworks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Product>ACR Geofencing Plugin for Xamarin and Windows</Product>
-        <Version>9.0.0</Version>
+        <Version>3.0.0</Version>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Authors>aritchie</Authors>
         <Company />
+        <Product>Plugin.Geofencing ($(TargetFramework))</Product>
         <Description>Cross Platform Geofencing Plugin for iOS, Android, and Windows</Description>
         <PackageProjectUrl>https://github.com/aritchie/geofences</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/aritchie/geofences/blob/master/LICENSE.md</PackageLicenseUrl>
@@ -18,59 +19,35 @@
         <PackageTags>windows uwp winphone android ios xamarin xam.pcl settings</PackageTags>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.0' OR '$(TargetFramework)' == 'netstandard2.0' ">
-        <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
-        <DefineConstants>$(DefineConstants);NETSTANDARD;BAIT</DefineConstants>
-        <Product>Plugin.Geofencing - .NET Standard</Product>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'MonoAndroid70' OR '$(TargetFramework)' == 'MonoAndroid80' ">
-        <DefineConstants>$(DefineConstants);__ANDROID__</DefineConstants>
-        <Product>Plugin.Geofencing - Android</Product>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">
-        <DefineConstants>$(DefineConstants);__IOS__</DefineConstants>
-        <Product>Plugin.Geofencing- iOS</Product>
-    </PropertyGroup>
-
     <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
         <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
         <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
-        <DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
-        <Product>Plugin.Geofencing - UWP</Product>
     </PropertyGroup>
 
     <ItemGroup>
         <Compile Remove="Platforms\**\*.cs" />
         <None Include="Platforms\**\*.cs" />
-        <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
+        <PackageReference Include="MSBuild.Sdk.Extras" Version="1.3.1" PrivateAssets="all" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.0' OR '$(TargetFramework)' == 'netstandard2.0' ">
-        <Compile Include="Platforms\Shared\**\*.cs" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid70' ">
+        <PackageReference Include="Xamarin.GooglePlayServices.Location" Version="42.1021.1" />
+        <Compile Include="Platforms\Android\**\*.cs" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid70' OR '$(TargetFramework)' == 'MonoAndroid80' ">
-        <Compile Include="Platforms\Shared\**\*.cs" />
-        <Compile Include="Platforms\Geolocator\**\*.cs" />
-        <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
-        <PackageReference Include="Xam.Plugin.Geolocator" Version="4.2.0" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80' ">
+        <PackageReference Include="Xamarin.GooglePlayServices.Location" Version="60.1142.1" />
+        <Compile Include="Platforms\Android\**\*.cs" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'Xamarin.iOS10' ">
-        <Compile Include="Platforms\Shared\**\*.cs" />
         <Compile Include="Platforms\iOS\**\*.cs" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-        <Compile Include="Platforms\Shared\**\*.cs" />
-        <Compile Include="Platforms\Geolocator\**\*.cs" />
-        <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
-        <PackageReference Include="Xam.Plugin.Geolocator" Version="4.2.0" />
-        <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.5" />
+        <Compile Include="Platforms\Uwp\**\*.cs" />
+        <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.8" />
     </ItemGroup>
 
     <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
-
 </Project>

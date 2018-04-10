@@ -25,9 +25,6 @@ namespace Plugin.Geofencing
         }
 
 
-        public Distance DesiredAccuracy { get; set; } = Distance.FromKilometers(1);
-
-
         public async Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken)
         {
             var tcs = new TaskCompletionSource<GeofenceStatus>();
