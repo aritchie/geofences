@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
@@ -15,12 +16,30 @@ namespace Plugin.Geofencing
         {
             GeofenceMonitor.Current.GeofenceStateChanged += (sender, args) =>
             {
+                if (this.RegionStatusChanged == null)
+                    return;
+
+                var changes = GeofenceMonitor
+                    .Current
+                    .ReadReports()
+                    .Where(x => x.Geofence.Geoshape is Geocircle);
+
+                foreach (var change in changes)
+                {
+                    var state = this.FromNative(change.NewState);
+                    var region = this.FromNative(change.Geofence);
+                    this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(region, state));
+                }
             };
-            GeofenceMonitor.Current.StatusChanged += (sender, args) => { };
         }
 
 
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions { get; }
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions => GeofenceMonitor
+            .Current
+            .Geofences
+            .Where(x => x.Geoshape is Geocircle)
+            .Select(this.FromNative)
+            .ToList();
 
         //<Capabilities>
         //<!-- DeviceCapability elements must follow Capability elements(if present) -->
@@ -28,39 +47,70 @@ namespace Plugin.Geofencing
         //    </ Capabilities >
         public async void StartMonitoring(GeofenceRegion region)
         {
-            var accessStatus = await Geolocator.RequestAccessAsync();
-            //string fenceId = "fence1";
-
-            //// Define the fence location and radius.
-            //BasicGeoposition position;
-            //position.Latitude = 47.6510;
-            //position.Longitude = -122.3473;
-            //position.Altitude = 0.0;
-            //double radius = 10; // in meters
-
-            //// Set a circular region for the geofence.
-            //Geocircle geocircle = new Geocircle(position, radius);
-
-            //// Create the geofence.
-            //Geofence geofence = new Geofence(fenceId, geocircle);
+            //var accessStatus = await Geolocator.RequestAccessAsync();
+            var native = this.ToNative(region);
+            GeofenceMonitor.Current.Geofences.Add(native);
         }
+
 
         public void StopMonitoring(GeofenceRegion region)
         {
-            throw new NotImplementedException();
+            // TODO: strong guess - this thing isn't thread safe
+            var list = GeofenceMonitor.Current.Geofences;
+            var geofence = list.FirstOrDefault(x => x.Id.Equals(region.Identifier));
+
+            if (geofence != null)
+                list.Remove(geofence);
         }
 
-        public void StopAllMonitoring()
-        {
-            throw new NotImplementedException();
-        }
 
-        public Distance DesiredAccuracy { get; set; }
+        public void StopAllMonitoring() => GeofenceMonitor.Current.Geofences.Clear();
+
+
         public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null)
         {
+            // TODO
             throw new NotImplementedException();
         }
 
         public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
+
+
+        GeofenceStatus FromNative(GeofenceState state)
+        {
+            switch (state)
+            {
+                case GeofenceState.Entered:
+                    return GeofenceStatus.Entered;
+
+                case GeofenceState.Exited:
+                    return GeofenceStatus.Exited;
+
+                default:
+                    return GeofenceStatus.Unknown;
+            }
+        }
+
+
+        GeofenceRegion FromNative(Geofence native)
+        {
+            var circle = (Geocircle)native.Geoshape;
+            var position = new Position(circle.Center.Latitude, circle.Center.Longitude);
+            var radius = Distance.FromMeters(circle.Radius);
+            return new GeofenceRegion(native.Id, position, radius);
+        }
+
+
+        Geofence ToNative(GeofenceRegion region)
+        {
+            var position = new BasicGeoposition
+            {
+                Latitude = region.Center.Latitude,
+                Longitude = region.Center.Longitude
+            };
+            var circle = new Geocircle(position, region.Radius.TotalMeters);
+            var geofence = new Geofence(region.Identifier, circle, MonitoredGeofenceStates.Entered | MonitoredGeofenceStates.Exited, false);
+            return geofence;
+        }
     }
 }

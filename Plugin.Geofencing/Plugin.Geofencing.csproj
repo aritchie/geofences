@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFrameworks></TargetFrameworks>
-        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">netstandard2.0;MonoAndroid70;MonoAndroid80;Xamarin.iOS10;uap10.0</TargetFrameworks>
-        <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard2.0;MonoAndroid70;MonoAndroid80;Xamarin.iOS10</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">netstandard2.0;MonoAndroid80;Xamarin.iOS10;uap10.0</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netstandard2.0;MonoAndroid80;Xamarin.iOS10</TargetFrameworks>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Product>ACR Geofencing Plugin for Xamarin and Windows</Product>
         <Version>3.0.0</Version>
@@ -28,11 +28,6 @@
         <Compile Remove="Platforms\**\*.cs" />
         <None Include="Platforms\**\*.cs" />
         <PackageReference Include="MSBuild.Sdk.Extras" Version="1.3.1" PrivateAssets="all" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid70' ">
-        <PackageReference Include="Xamarin.GooglePlayServices.Location" Version="42.1021.1" />
-        <Compile Include="Platforms\Android\**\*.cs" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80' ">
