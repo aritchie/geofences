@@ -11,19 +11,12 @@ namespace Plugin.Geofencing
         protected override void OnHandleIntent(Intent intent)
         {
             var e = GeofencingEvent.FromIntent(intent);
-
-            if (e.HasError)
+            if (CrossGeofences.Current is GeofenceManagerImpl impl)
             {
-
+                impl.TryFireEvent(e);
+                return;
             }
-            else if (e.GeofenceTransition == Geofence.GeofenceTransitionEnter)
-            {
-
-            }
-            else if (e.GeofenceTransition == Geofence.GeofenceTransitionExit)
-            {
-
-            }
+            throw new ArgumentException("CrossGeofences.Current must be the GeofenceManagerImpl");
         }
     }
 }

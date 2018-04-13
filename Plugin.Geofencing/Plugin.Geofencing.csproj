@@ -31,6 +31,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80' ">
+        <PackageReference Include="Acr.Settings" Version="9.0.0" />
         <PackageReference Include="Xamarin.GooglePlayServices.Location" Version="60.1142.1" />
         <Compile Include="Platforms\Android\**\*.cs" />
     </ItemGroup>
