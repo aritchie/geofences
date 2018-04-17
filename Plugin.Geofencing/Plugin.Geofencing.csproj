@@ -42,7 +42,7 @@
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
         <Compile Include="Platforms\Uwp\**\*.cs" />
-        <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.8" />
+        <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.1" />
     </ItemGroup>
 
     <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />

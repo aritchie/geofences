@@ -9,7 +9,7 @@ namespace Plugin.Geofencing
         {
             foreach (var region in geofenceMgr.MonitoredRegions)
             {
-                if (region.Identifier.Equals(identifier, StringComparison.InvariantCultureIgnoreCase))
+                if (region.Identifier.ToLower().Equals(identifier.ToLower()))
                 {
                     geofenceMgr.StopMonitoring(region);
                     break;
