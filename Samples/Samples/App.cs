@@ -7,13 +7,12 @@ namespace Samples
 {
     public class App : Application
     {
-        public static SqliteConnection Connection { get; private set; }
+        public static SqliteConnection Connection { get; } = new SqliteConnection();
 
 
         public App()
         {
             this.MainPage = new MainPage();
-            Connection = new SqliteConnection("", true);
         }
 
 

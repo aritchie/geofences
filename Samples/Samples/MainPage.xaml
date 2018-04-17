@@ -1,37 +1,75 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:samples="clr-namespace:Samples;assembly=Samples"
              x:Class="Samples.MainPage">
+
+    <TabbedPage.BindingContext>
+        <samples:MainViewModel />
+    </TabbedPage.BindingContext>
+
     <TabbedPage.Children>
         <ContentPage Title="Geofences">
-            <ListView ItemsSource="{Binding MonitoredRegions}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.View>
-                                <StackLayout>
-                                    <Label Text="{Binding Identifier}" />
-                                </StackLayout>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <StackLayout>
+                <Label Text="No Geofences Configured">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="False">
+                            <Setter Property="IsVisible" Value="True" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="True">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+
+                <ListView ItemsSource="{Binding Geofences}" IsVisible="{Binding HasGeofences}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Text}" Detail="{Binding Detail}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
         </ContentPage>
 
         <ContentPage Title="Events">
-            <ListView ItemsSource="{Binding Events}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextCell Text="{Binding Region.Identifier}"
-                                  Detail="{Binding Status}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <StackLayout>
+                <Label Text="No Geofence Events Recorded">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding HasEvents}" Value="False">
+                            <Setter Property="IsVisible" Value="True" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding HasEvents}" Value="True">
+                            <Setter Property="IsVisible" Value="False" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <ListView ItemsSource="{Binding Events}" IsVisible="{Binding HasEvents}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Text}" Detail="{Binding Detail}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
         </ContentPage>
 
-        <ContentPage Title="New">
+        <ContentPage Title="Add Geofence">
+            <StackLayout>
+                <Label Text="Name" />
+                <Entry Text="{Binding Identifier}" Keyboard="Text" />
 
+                <Label Text="Latitude" />
+                <Entry Text="{Binding CenterLatitude}" Keyboard="Numeric" />
+
+                <Label Text="Longitude" />
+                <Entry Text="{Binding CenterLongitude}" Keyboard="Numeric" />
+
+                <Label Text="Radius (m)" />
+                <Entry Text="{Binding RadiusMeters}" Keyboard="Numeric" />
+
+                <Button Text="Create Geofence" Command="{Binding CreateGeofence}" />
+            </StackLayout>
         </ContentPage>
 
     </TabbedPage.Children>

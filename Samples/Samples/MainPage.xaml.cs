@@ -12,5 +12,12 @@ namespace Samples
 		{
 			this.InitializeComponent();
 		}
+
+
+	    protected override void OnAppearing()
+	    {
+	        base.OnAppearing();
+	        ((MainViewModel) this.BindingContext).Start();
+	    }
 	}
 }

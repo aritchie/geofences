@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Plugin.Permissions.Abstractions;
 
 
 namespace Plugin.Geofencing
@@ -9,16 +10,31 @@ namespace Plugin.Geofencing
     public interface IGeofenceManager
     {
         /// <summary>
-        /// Current set of regions being monitored
+        /// Requests permission to use location services
+        /// </summary>
+        /// <returns></returns>
+        Task<PermissionStatus> RequestPermission();
+
+        /// <summary>
+        /// Current set of geofences being monitored
         /// </summary>
         IReadOnlyList<GeofenceRegion> MonitoredRegions { get; }
 
         /// <summary>
-        ///
+        /// Start monitoring a geofence
         /// </summary>
         /// <param name="region"></param>
         void StartMonitoring(GeofenceRegion region);
+
+        /// <summary>
+        /// Stop monitoring a geofence
+        /// </summary>
+        /// <param name="region"></param>
         void StopMonitoring(GeofenceRegion region);
+
+        /// <summary>
+        /// Stop monitoring all active geofences
+        /// </summary>
         void StopAllMonitoring();
 
         /// <summary>
@@ -29,6 +45,9 @@ namespace Plugin.Geofencing
         /// <returns>Status of geofence</returns>
         Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null);
 
+        /// <summary>
+        /// The geofence event
+        /// </summary>
         event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
     }
 }

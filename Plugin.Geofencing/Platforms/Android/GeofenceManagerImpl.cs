@@ -8,6 +8,8 @@ using Android.App;
 using Android.Content;
 using Android.Gms.Extensions;
 using Android.Gms.Location;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 
 
 namespace Plugin.Geofencing
@@ -24,10 +26,25 @@ namespace Plugin.Geofencing
 
         public GeofenceManagerImpl()
         {
+            //CrossPermissions.Current.RequestPermissionsAsync(Permission.LocationAlways)
             this.settings = CrossSettings.Current;
             this.syncLock = new object();
             this.client = LocationServices.GetGeofencingClient(Application.Context);
             this.regions = this.GetPersistedRegions();
+        }
+
+
+        public async Task<PermissionStatus> RequestPermission()
+        {
+            var result = await CrossPermissions
+                .Current
+                .RequestPermissionsAsync(Permission.LocationAlways)
+                .ConfigureAwait(false);
+
+            if (!result.ContainsKey(Permission.LocationAlways))
+                return PermissionStatus.Unknown;
+
+            return result[Permission.LocationAlways];
         }
 
 
@@ -67,6 +84,9 @@ namespace Plugin.Geofencing
             {
                 this.regions.Add(region);
                 this.PersistRegions();
+
+                if (this.regions.Count == 1)
+                    Application.Context.StartService(new Intent(Application.Context, typeof(GeofenceIntentService)));
             }
             //.AddOnSuccessListener(this)
             //.AddOnFailureListener(this);
@@ -80,6 +100,9 @@ namespace Plugin.Geofencing
                 this.client.RemoveGeofences(new List<string> { region.Identifier });
                 if (this.regions.Remove(region))
                     this.PersistRegions();
+
+                if (this.regions.Count == 0)
+                    Application.Context.StopService(new Intent(Application.Context, typeof(GeofenceIntentService)));
             }
         }
 
@@ -91,6 +114,8 @@ namespace Plugin.Geofencing
                 var ids = this.regions.Select(x => x.Identifier).ToList();
                 this.client.RemoveGeofences(ids);
                 this.regions.Clear();
+
+                Application.Context.StopService(new Intent(Application.Context, typeof(GeofenceIntentService)));
             }
         }
 

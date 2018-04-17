@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreLocation;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 using UIKit;
 
 
@@ -22,6 +24,20 @@ namespace Plugin.Geofencing
             this.locationManager = new CLLocationManager();
             this.locationManager.RegionEntered += (sender, args) => this.DoBroadcast(args, GeofenceStatus.Entered);
             this.locationManager.RegionLeft += (sender, args) => this.DoBroadcast(args, GeofenceStatus.Exited);
+        }
+
+
+        public async Task<PermissionStatus> RequestPermission()
+        {
+            var result = await CrossPermissions
+                .Current
+                .RequestPermissionsAsync(Permission.LocationAlways)
+                .ConfigureAwait(false);
+
+            if (!result.ContainsKey(Permission.LocationAlways))
+                return PermissionStatus.Unknown;
+
+            return result[Permission.LocationAlways];
         }
 
 

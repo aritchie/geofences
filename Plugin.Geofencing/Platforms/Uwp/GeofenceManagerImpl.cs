@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Geolocation.Geofencing;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 
 
 namespace Plugin.Geofencing
@@ -34,6 +36,20 @@ namespace Plugin.Geofencing
         }
 
 
+        public async Task<PermissionStatus> RequestPermission()
+        {
+            var result = await CrossPermissions
+                .Current
+                .RequestPermissionsAsync(Permission.LocationAlways)
+                .ConfigureAwait(false);
+
+            if (!result.ContainsKey(Permission.LocationAlways))
+                return PermissionStatus.Unknown;
+
+            return result[Permission.LocationAlways];
+        }
+
+
         public IReadOnlyList<GeofenceRegion> MonitoredRegions => GeofenceMonitor
             .Current
             .Geofences
@@ -45,7 +61,7 @@ namespace Plugin.Geofencing
         //<!-- DeviceCapability elements must follow Capability elements(if present) -->
         //<DeviceCapability Name = "location" />
         //    </ Capabilities >
-        public async void StartMonitoring(GeofenceRegion region)
+        public void StartMonitoring(GeofenceRegion region)
         {
             //var accessStatus = await Geolocator.RequestAccessAsync();
             var native = this.ToNative(region);

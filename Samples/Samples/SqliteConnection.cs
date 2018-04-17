@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Acr.IO;
 using SQLite;
 
 
@@ -6,14 +8,9 @@ namespace Samples
 {
     public class SqliteConnection : SQLiteConnection
     {
-        public SqliteConnection(string databasePath, bool storeDateTimeAsTicks = true) : base(databasePath, storeDateTimeAsTicks)
+        public SqliteConnection() : base(Path.Combine(FileSystem.Current.AppData.FullName, "geofences.db"), SQLiteOpenFlags.FullMutex | SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite, true)
         {
             this.CreateTable<GeofenceEvent>();
-        }
-
-
-        public SqliteConnection(string databasePath, SQLiteOpenFlags openFlags, bool storeDateTimeAsTicks = true) : base(databasePath, openFlags, storeDateTimeAsTicks)
-        {
         }
 
 

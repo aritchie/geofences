@@ -4,7 +4,9 @@ using System.Linq;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using Plugin.Geofencing;
+using Plugin.Permissions.Abstractions;
 using ReactiveUI;
+using Xamarin.Forms;
 
 
 namespace Samples
@@ -13,19 +15,37 @@ namespace Samples
     {
         public MainViewModel()
         {
-            // may want to manually add the event instead of spawning entire refresh (screen may not be active either)
-            CrossGeofences.Current.RegionStatusChanged += (sender, args) => this.LoadEvents();
+            this.Identifier = "CNTowerToronto";
+            this.CenterLatitude = 43.6425662;
+            this.CenterLongitude = -79.3892508;
+            this.RadiusMeters = 200;
 
-            this.AddFence = ReactiveCommand.Create(() =>
+
+            this.CreateGeofence = ReactiveCommand.CreateFromTask(async _ =>
                 {
                     try
                     {
-                        CrossGeofences.Current.StartMonitoring(new GeofenceRegion(
-                            this.Identifier,
-                            new Position(this.CenterLatitude, this.CenterLongitude),
-                            Distance.FromMeters(this.RadiusMeters)
-                        ));
-                        this.RaisePropertyChanged(nameof(this.MonitoredRegions));
+                        var permission = await CrossGeofences.Current.RequestPermission();
+                        if (permission == PermissionStatus.Granted)
+                        {
+                            CrossGeofences.Current.StartMonitoring(new GeofenceRegion(
+                                this.Identifier,
+                                new Position(this.CenterLatitude, this.CenterLongitude),
+                                Distance.FromMeters(this.RadiusMeters)
+                            ));
+                            UserDialogs.Instance.Alert("Geofence Created");
+
+                            this.CenterLatitude = 0;
+                            this.CenterLongitude = 0;
+                            this.RadiusMeters = 200;
+                            this.Identifier = String.Empty;
+                        }
+                        else
+                        {
+                            UserDialogs.Instance.Alert("Error getting geofence permission - " + permission);
+                        }
+
+                        this.LoadRegions();
                     }
                     catch (Exception ex)
                     {
@@ -45,10 +65,10 @@ namespace Samples
                         if (rad < 200 || rad > 5000)
                             return false;
 
-                        if (lat > 179.9 || lat < -179.9)
+                        if (lat > 89.9 || lat < -89.9)
                             return false;
 
-                        if (lng > 89.9 || lng < -89.9)
+                        if (lng > 179.9 || lng < -179.9)
                             return false;
 
                         return true;
@@ -57,34 +77,59 @@ namespace Samples
             );
 
             this.DropFence = ReactiveCommand.Create<GeofenceRegion>(x =>
-            {
-                CrossGeofences.Current.StopMonitoring(x);
-                this.RaisePropertyChanged(nameof(this.MonitoredRegions));
-            });
+                UserDialogs.Instance.Confirm(new ConfirmConfig()
+                    .UseYesNo()
+                    .SetTitle("Confirm")
+                    .SetMessage($"Are you sure you wish to stop monitoring {x.Identifier}?")
+                    .SetAction(confirm =>
+                    {
+                        if (confirm)
+                        {
+                            CrossGeofences.Current.StopMonitoring(x);
+                            this.LoadRegions();
+                        }
+                    })
+                )
+            );
         }
 
 
-        void LoadEvents()
+        public void Start()
         {
-            this.Events = App.Connection.GeofenceEvents.OrderBy(x => x.Date).ToList();
+            this.LoadGeofences();
+            this.LoadRegions();
+
+            CrossGeofences.Current.RegionStatusChanged += (sender, args) => this.LoadGeofences();
         }
 
 
-        public ICommand AddFence { get; }
+        void LoadGeofences()
+        {
+            this.Events = App
+                .Connection
+                .GeofenceEvents
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            this.RaisePropertyChanged(nameof(this.Events));
+            this.RaisePropertyChanged(nameof(this.HasEvents));
+        }
+
+
+        void LoadRegions()
+        {
+            this.Geofences = CrossGeofences.Current.MonitoredRegions.Select(x => new GeofenceRegionViewModel(x)).ToList();
+            this.RaisePropertyChanged(nameof(this.Geofences));
+            this.RaisePropertyChanged(nameof(this.HasGeofences));
+        }
+
+
+        public ICommand CreateGeofence { get; }
         public ICommand DropFence { get; }
-        public IList<GeofenceRegion> MonitoredRegions => CrossGeofences.Current.MonitoredRegions.ToList();
-
-
-        IList<GeofenceEvent> events;
-        public IList<GeofenceEvent> Events
-        {
-            get => this.events;
-            private set
-            {
-                this.events = value;
-                this.RaisePropertyChanged();
-            }
-        }
+        public bool HasGeofences => this.Geofences.Any();
+        public IList<GeofenceRegionViewModel> Geofences { get; private set; } = new List<GeofenceRegionViewModel>();
+        public bool HasEvents => this.Events.Any();
+        public IList<GeofenceEvent> Events { get; private set; } = new List<GeofenceEvent>();
 
 
         string identifier;
