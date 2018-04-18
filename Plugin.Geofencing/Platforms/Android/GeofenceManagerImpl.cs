@@ -38,6 +38,9 @@ namespace Plugin.Geofencing
         }
 
 
+        public GeofenceManagerStatus Status => GeofenceManagerStatus.Ready;
+
+
         public async Task<PermissionStatus> RequestPermission()
         {
             var result = await CrossPermissions

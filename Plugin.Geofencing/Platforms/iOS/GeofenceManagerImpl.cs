@@ -27,6 +27,24 @@ namespace Plugin.Geofencing
         }
 
 
+        public GeofenceManagerStatus Status
+        {
+            get
+            {
+                if (!CLLocationManager.LocationServicesEnabled)
+                    return GeofenceManagerStatus.Disabled;
+
+                if (!CLLocationManager.IsMonitoringAvailable(typeof(CLCircularRegion)))
+                    return GeofenceManagerStatus.Disabled;
+
+                if (CLLocationManager.Status != CLAuthorizationStatus.AuthorizedAlways)
+                    return GeofenceManagerStatus.PermissionDenied;
+
+                return GeofenceManagerStatus.Ready;
+            }
+        }
+
+
         public async Task<PermissionStatus> RequestPermission()
         {
             var result = await CrossPermissions

@@ -10,6 +10,11 @@ namespace Plugin.Geofencing
     public interface IGeofenceManager
     {
         /// <summary>
+        /// Geofencing Status
+        /// </summary>
+        GeofenceManagerStatus Status { get; }
+
+        /// <summary>
         /// Requests permission to use location services
         /// </summary>
         /// <returns></returns>

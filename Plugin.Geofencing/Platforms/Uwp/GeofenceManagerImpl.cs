@@ -36,6 +36,27 @@ namespace Plugin.Geofencing
         }
 
 
+        public GeofenceManagerStatus Status
+        {
+            get
+            {
+                switch (GeofenceMonitor.Current.Status)
+                {
+                    case GeofenceMonitorStatus.Ready:
+                        return GeofenceManagerStatus.Ready;
+
+                    case GeofenceMonitorStatus.Disabled:
+                        return GeofenceManagerStatus.Disabled;
+
+                    case GeofenceMonitorStatus.NotAvailable:
+                        return GeofenceManagerStatus.NotSupported;
+
+                    default:
+                        return GeofenceManagerStatus.Unknown;
+                }
+            }
+        }
+
         public async Task<PermissionStatus> RequestPermission()
         {
             var result = await CrossPermissions
