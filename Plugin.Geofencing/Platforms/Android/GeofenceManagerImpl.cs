@@ -11,6 +11,10 @@ using Android.Gms.Location;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 
+[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
+[assembly: UsesFeature("android.hardware.location.gps")]
+[assembly: UsesFeature("android.hardware.location.network")]
+
 
 namespace Plugin.Geofencing
 {

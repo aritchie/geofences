@@ -3,8 +3,15 @@
 
 namespace Plugin.Geofencing
 {
-    public static partial class CrossGeofences
+    public static class CrossGeofences
     {
+#if __IOS__ || __ANDROID__ || WINDOWS_UWP
+        static CrossGeofences()
+        {
+            Current = new GeofenceManagerImpl();
+        }
+#endif
+
         static IGeofenceManager current;
         public static IGeofenceManager Current
         {

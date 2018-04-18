@@ -127,6 +127,10 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Plugin.Geofencing\Plugin.Geofencing.csproj">
+      <Project>{82ab56be-2daf-4c8b-9775-d7bc90912e95}</Project>
+      <Name>Plugin.Geofencing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Samples\Samples.csproj">
       <Project>{d596d4af-f525-4189-8311-9b0cbd979ac3}</Project>
       <Name>Samples</Name>

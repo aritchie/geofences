@@ -131,6 +131,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Plugin.Geofencing\Plugin.Geofencing.csproj">
+      <Project>{82ab56be-2daf-4c8b-9775-d7bc90912e95}</Project>
+      <Name>Plugin.Geofencing</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
