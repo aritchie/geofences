@@ -102,6 +102,7 @@ namespace Plugin.Geofencing
                     .Where(x => x != null)
                     .Select(this.FromNative)
                     .ToList();
+
                 return new ReadOnlyCollection<GeofenceRegion>(list);
             }
         }
