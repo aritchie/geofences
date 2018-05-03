@@ -116,6 +116,9 @@ namespace Plugin.Geofencing
 
         public void StopAllMonitoring()
         {
+            if (this.regions.Count == 0)
+                return;
+
             lock (this.syncLock)
             {
                 var ids = this.regions.Select(x => x.Identifier).ToList();

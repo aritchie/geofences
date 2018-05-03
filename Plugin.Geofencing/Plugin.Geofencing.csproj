@@ -7,7 +7,7 @@
         <AssemblyName>Plugin.Geofencing</AssemblyName>
         <RootNamespace>Plugin.Geofencing</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <Version>3.0.0-beta1</Version>
+        <Version>3.0.0-beta2</Version>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Authors>aritchie</Authors>
