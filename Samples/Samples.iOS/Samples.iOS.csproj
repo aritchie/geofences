@@ -138,13 +138,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Plugin.Permissions">
-      <Version>2.2.1</Version>
+      <Version>3.0.0.12</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Build.Download">
       <Version>0.4.11</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>2.5.1.444934</Version>
+      <Version>3.1.0.697729</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

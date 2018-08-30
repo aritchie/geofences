@@ -188,8 +188,7 @@ namespace Plugin.Geofencing
 
 
         protected virtual CLCircularRegion ToNative(GeofenceRegion region)
-        {
-            return new CLCircularRegion(
+            => new CLCircularRegion(
                 this.ToNative(region.Center),
                 region.Radius.TotalMeters,
                 region.Identifier
@@ -198,6 +197,5 @@ namespace Plugin.Geofencing
                 NotifyOnExit = true,
                 NotifyOnEntry = true
             };
-        }
     }
 }
