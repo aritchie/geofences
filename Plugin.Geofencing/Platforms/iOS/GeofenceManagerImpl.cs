@@ -113,6 +113,7 @@ namespace Plugin.Geofencing
             //if !CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion) {
             UIApplication.SharedApplication.InvokeOnMainThread(() =>
             {
+                // TODO: try/catch this
                 var native = this.ToNative(region);
                 this.locationManager.StartMonitoring(native);
             });
