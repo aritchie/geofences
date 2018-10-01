@@ -23,14 +23,18 @@ namespace Plugin.Geofencing
     {
         readonly PluginSqliteConnection conn;
         readonly GeofencingClient client;
+        readonly Dictionary<string, DbGeofenceRegion> current;
         PendingIntent geofencePendingIntent;
 
 
         public GeofenceManagerImpl()
         {
-            //CrossPermissions.Current.RequestPermissionsAsync(Permission.LocationAlways)
-            this.conn = new PluginSqliteConnection();
             this.client = LocationServices.GetGeofencingClient(Application.Context);
+            this.conn = new PluginSqliteConnection();
+            this.current = this.conn.GeofenceRegions.ToList().ToDictionary(
+                x => x.Identifier,
+                x => x
+            );
         }
 
 
@@ -51,19 +55,18 @@ namespace Plugin.Geofencing
         }
 
 
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions => this.conn
-            .GeofenceRegions
-            .ToList()
+        public IReadOnlyList<GeofenceRegion> MonitoredRegions => this.current.Values
             .Select(x => new GeofenceRegion(
                 x.Identifier,
                 new Position(x.CenterGpsLatitude, x.CenterGpsLongitude),
                 Distance.FromMeters(x.RadiusMeters)
-            ))
+             ))
             .ToList();
 
 
         public async void StartMonitoring(GeofenceRegion region)
         {
+            var transitions = this.GetTransitions(region);
             var geofence = new GeofenceBuilder()
                 .SetRequestId(region.Identifier)
                 .SetExpirationDuration(Geofence.NeverExpire)
@@ -72,89 +75,85 @@ namespace Plugin.Geofencing
                     region.Center.Longitude,
                     Convert.ToSingle(region.Radius.TotalMeters)
                 )
-                .SetTransitionTypes(
-                    Geofence.GeofenceTransitionEnter |
-                    Geofence.GeofenceTransitionExit
-                )
+                .SetTransitionTypes(transitions)
                 .Build();
 
             var request = new GeofencingRequest.Builder()
                 .AddGeofence(geofence)
-                .SetInitialTrigger(GeofencingRequest.InitialTriggerEnter | GeofencingRequest.InitialTriggerExit)
+                .SetInitialTrigger(transitions)
                 .Build();
 
             await this.client.AddGeofences(request, this.GetPendingIntent());
-            this.conn.Insert(new DbGeofenceRegion
+
+            var db = new DbGeofenceRegion
             {
                 Identifier = region.Identifier,
                 CenterGpsLatitude = region.Center.Latitude,
                 CenterGpsLongitude = region.Center.Longitude,
+                NotifyOnEntry = region.NotifyOnEntry,
+                NotifyOnExit = region.NotifyOnExit,
+                SingleUse = region.SingleUse,
                 RadiusMeters = region.Radius.TotalMeters,
                 DateCreatedUtc = DateTime.UtcNow
-            });
+            };
+            this.conn.Insert(db);
+            this.current.Add(db.Identifier, db);
 
-                //if (this.regions.Count == 1)
-                    Application.Context.StartService(new Intent(Application.Context, typeof(GeofenceIntentService)));
-            //.AddOnSuccessListener(this)
-            //.AddOnFailureListener(this);
+            if (this.current.Count == 1)
+                Application.Context.StartService(new Intent(Application.Context, typeof(GeofenceIntentService)));
         }
 
 
         public void StopMonitoring(GeofenceRegion region)
         {
+            this.client.RemoveGeofences(new List<string> { region.Identifier });
+
+            this.current.Remove(region.Identifier);
             this.conn.Delete<DbGeofenceRegion>(region.Identifier);
 
-            //lock (this.syncLock)
-            //{
-            //    this.client.RemoveGeofences(new List<string> { region.Identifier });
-            //    if (this.regions.Remove(region))
-            //        this.PersistRegions();
-
-            //    if (this.regions.Count == 0)
-            //        Application.Context.StopService(new Intent(Application.Context, typeof(GeofenceIntentService)));
-            //}
+            if (this.current.Count == 0)
+                Application.Context.StopService(new Intent(Application.Context, typeof(GeofenceIntentService)));
         }
 
 
-        public void StopAllMonitoring()
+        public async void StopAllMonitoring()
         {
             this.conn.DeleteAll<DbGeofenceRegion>();
-            //    if (this.regions.Count == 0)
-            //        return;
-
-            //    lock (this.syncLock)
-            //    {
-            //        var ids = this.regions.Select(x => x.Identifier).ToList();
-            //        this.client.RemoveGeofences(ids);
-            //        this.regions.Clear();
-
-            //        Application.Context.StopService(new Intent(Application.Context, typeof(GeofenceIntentService)));
-            //    }
+            await this.client.RemoveGeofences(this.current.Keys.ToList());
+            this.current.Clear();
+            Application.Context.StopService(new Intent(Application.Context, typeof(GeofenceIntentService)));
         }
 
 
         public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null)
         {
-            return Task.FromResult(GeofenceStatus.Unknown);
-        }
+            if (!this.current.ContainsKey(region.Identifier))
+                return Task.FromResult(GeofenceStatus.Unknown);
 
+            var result = (GeofenceStatus)this.current[region.Identifier].CurrentStatus;
+            return Task.FromResult(result);
+        }
 
 
         public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
 
 
-        //public void OnSuccess(Object result)
-        //{
-        //}
+        protected virtual void OnRegionStatusChanged(DbGeofenceRegion region, GeofenceStatus status)
+        {
+            if (this.RegionStatusChanged == null)
+                return;
 
-
-        //public void OnFailure(Exception e)
-        //{
-        //}
-
-
-        protected virtual void OnRegionStatusChanged(GeofenceRegion region, GeofenceStatus status)
-            => this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(region, status));
+            var wrap = new GeofenceRegion(
+                region.Identifier,
+                new Position(region.CenterGpsLatitude, region.CenterGpsLongitude),
+                Distance.FromMeters(region.RadiusMeters)
+            )
+            {
+                NotifyOnEntry = region.NotifyOnEntry,
+                NotifyOnExit = region.NotifyOnExit
+            };
+            this.RegionStatusChanged.Invoke(this, new GeofenceStatusChangedEventArgs(wrap, status));
+        }
 
 
         protected virtual PendingIntent GetPendingIntent()
@@ -169,26 +168,41 @@ namespace Plugin.Geofencing
         }
 
 
-        //void PersistRegions() => this.settings.Set(nameof(this.MonitoredRegions), this.regions);
-        //IList<GeofenceRegion> GetPersistedRegions() => this.settings.Get(nameof(this.MonitoredRegions), new List<GeofenceRegion>());
+        protected virtual int GetTransitions(GeofenceRegion region)
+        {
+            //GeofencingRequest.InitialTriggerEnter |
+            //GeofencingRequest.InitialTriggerExit
+            //    Geofence.GeofenceTransitionEnter |
+            //    Geofence.GeofenceTransitionExit
+
+            var i = 0;
+            if (region.NotifyOnEntry)
+                i = 1;
+
+            if (region.NotifyOnExit)
+                i += 2;
+
+            return i;
+        }
 
 
         internal void TryFireEvent(GeofencingEvent @event)
         {
-            // TODO: I should track state internally so I can respond to RequestState
-            if (this.RegionStatusChanged == null)
-                return;
+            var status = @event.GeofenceTransition == Geofence.GeofenceTransitionEnter
+                ? GeofenceStatus.Entered
+                : GeofenceStatus.Exited;
 
-                var status = @event.GeofenceTransition == Geofence.GeofenceTransitionEnter
-                    ? GeofenceStatus.Entered
-                    : GeofenceStatus.Exited;
+            foreach (var native in @event.TriggeringGeofences)
+            {
+                if (this.current.ContainsKey(native.RequestId))
+                {
+                    var wrap = this.current[native.RequestId];
+                    wrap.CurrentStatus = (int)status;
+                    this.conn.Update(wrap);
 
-            //foreach (var native in @event.TriggeringGeofences)
-            //{
-            //    var region = this.regions.FirstOrDefault(x => x.Identifier.Equals(native.RequestId));
-            //    if (region != null)
-            //        this.OnRegionStatusChanged(region, status);
-            //}
+                    this.OnRegionStatusChanged(wrap, status);
+                }
+            }
         }
     }
 }

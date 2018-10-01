@@ -6,7 +6,6 @@
         <RootNamespace>Plugin.Geofencing</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Version>3.0.0-beta2</Version>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Authors>aritchie</Authors>
         <Company />
         <Product>$(AssemblyName) ($(TargetFramework))</Product>
@@ -43,7 +42,6 @@
     <ItemGroup>
         <Compile Remove="Platforms\**\*.cs" />
         <None Include="Platforms\**\*.cs" />
-        <Compile Include="Platforms\Shared\CrossGeofences.cs" />
         <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
     </ItemGroup>
@@ -54,8 +52,7 @@
 
     <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
         <Compile Include="Platforms\Android\**\*.cs" />
-        <Compile Include="Platforms\Shared\**\*.cs" />
-        <PackageReference Include="sqlite-net-pcl" Version="1.4.118" />
+        <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
         <PackageReference Include="Xamarin.GooglePlayServices.Location" Version="60.1142.1" />
     </ItemGroup>
 

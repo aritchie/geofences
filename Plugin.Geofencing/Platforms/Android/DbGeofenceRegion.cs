@@ -2,8 +2,9 @@
 using SQLite;
 
 
-namespace Plugin.Geofencing.Platforms.Android
+namespace Plugin.Geofencing
 {
+    [Table("GeofenceRegions")]
     public class DbGeofenceRegion
     {
         [PrimaryKey]
@@ -12,6 +13,9 @@ namespace Plugin.Geofencing.Platforms.Android
         public double RadiusMeters { get; set; }
         public double CenterGpsLatitude { get; set; }
         public double CenterGpsLongitude { get; set; }
+        public bool SingleUse { get; set; }
+        public bool NotifyOnEntry { get; set; }
+        public bool NotifyOnExit { get; set; }
 
         public int CurrentStatus { get; set; }
         public DateTime DateCreatedUtc { get; set; }

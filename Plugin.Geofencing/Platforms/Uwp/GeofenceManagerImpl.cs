@@ -134,7 +134,12 @@ namespace Plugin.Geofencing
             var circle = (Geocircle)native.Geoshape;
             var position = new Position(circle.Center.Latitude, circle.Center.Longitude);
             var radius = Distance.FromMeters(circle.Radius);
-            return new GeofenceRegion(native.Id, position, radius);
+            return new GeofenceRegion(native.Id, position, radius)
+            {
+                SingleUse = native.SingleUse,
+                NotifyOnEntry = native.MonitoredStates.HasFlag(MonitoredGeofenceStates.Entered),
+                NotifyOnExit = native.MonitoredStates.HasFlag(MonitoredGeofenceStates.Exited)
+            };
         }
 
 
@@ -145,9 +150,25 @@ namespace Plugin.Geofencing
                 Latitude = region.Center.Latitude,
                 Longitude = region.Center.Longitude
             };
+
             var circle = new Geocircle(position, region.Radius.TotalMeters);
-            var geofence = new Geofence(region.Identifier, circle, MonitoredGeofenceStates.Entered | MonitoredGeofenceStates.Exited, false);
+            var geofence = new Geofence(
+                region.Identifier, circle,
+                ToStates(region),
+                region.SingleUse
+            );
             return geofence;
+        }
+
+
+        static MonitoredGeofenceStates ToStates(GeofenceRegion region)
+        {
+            var i = 0;
+            if (region.NotifyOnEntry)
+                i = 1;
+            if (region.NotifyOnExit)
+                i += 2;
+            return (MonitoredGeofenceStates) i;
         }
     }
 }

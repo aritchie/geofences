@@ -152,6 +152,7 @@ namespace Plugin.Geofencing
 
             var region = this.FromNative(native);
             this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(region, status));
+            // TODO: 1 time use delete
         }
 
 
@@ -159,7 +160,11 @@ namespace Plugin.Geofencing
         {
             var radius = Distance.FromMeters(native.Radius);
             var center = this.FromNative(native.Center);
-            return new GeofenceRegion(native.Identifier, center, radius);
+            return new GeofenceRegion(native.Identifier, center, radius)
+            {
+                NotifyOnEntry = native.NotifyOnEntry,
+                NotifyOnExit = native.NotifyOnExit
+            };
         }
 
 
@@ -189,14 +194,15 @@ namespace Plugin.Geofencing
 
 
         protected virtual CLCircularRegion ToNative(GeofenceRegion region)
-            => new CLCircularRegion(
+            => new CLCircularRegion
+            (
                 this.ToNative(region.Center),
                 region.Radius.TotalMeters,
                 region.Identifier
             )
             {
-                NotifyOnExit = true,
-                NotifyOnEntry = true
+                NotifyOnExit = region.NotifyOnExit,
+                NotifyOnEntry = region.NotifyOnEntry
             };
     }
 }
