@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreLocation;
+using Foundation;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using UIKit;
@@ -17,7 +18,6 @@ namespace Plugin.Geofencing
     public class GeofenceManagerImpl : IGeofenceManager
     {
         readonly CLLocationManager locationManager;
-
 
         public GeofenceManagerImpl()
         {
@@ -59,10 +59,9 @@ namespace Plugin.Geofencing
         }
 
 
-        public async Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken)
+        public async Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken)
         {
             var tcs = new TaskCompletionSource<GeofenceStatus>();
-            cancelToken?.Register(() => tcs.TrySetCanceled());
 
             var handler = new EventHandler<CLRegionStateDeterminedEventArgs>((sender, args) =>
             {
@@ -76,10 +75,13 @@ namespace Plugin.Geofencing
 
             try
             {
-                this.locationManager.DidDetermineState += handler;
-                var native = this.ToNative(region);
-                this.locationManager.RequestState(native);
-                return await tcs.Task;
+                using (cancelToken.Register(() => tcs.TrySetCanceled()))
+                {
+                    this.locationManager.DidDetermineState += handler;
+                    var native = this.ToNative(region);
+                    this.locationManager.RequestState(native);
+                    return await tcs.Task;
+                }
             }
             finally
             {
@@ -113,18 +115,24 @@ namespace Plugin.Geofencing
             //if !CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion) {
             UIApplication.SharedApplication.InvokeOnMainThread(() =>
             {
-                // TODO: try/catch this
-                var native = this.ToNative(region);
-                this.locationManager.StartMonitoring(native);
+                try
+                {
+                    var native = this.ToNative(region);
+                    this.locationManager.StartMonitoring(native);
+                    this.SetIfSingleUse(region);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
             });
-            //this.locationManager.DesiredAccuracy
-            //this.locationManager.StartMonitoring(native, this.DesiredAccuracy.TotalMeters);
         }
 
 
         public void StopMonitoring(GeofenceRegion region)
         {
             var native = this.ToNative(region);
+            this.KillIfSingleUse(region.Identifier);
             this.locationManager.StopMonitoring(native);
         }
 
@@ -134,12 +142,14 @@ namespace Plugin.Geofencing
             var natives = this
                 .locationManager
                 .MonitoredRegions
-                .Select(x => x as CLCircularRegion)
-                .Where(x => x != null)
+                .OfType<CLCircularRegion>()
                 .ToList();
 
             foreach (var native in natives)
+            {
+                this.KillIfSingleUse(native.Identifier);
                 this.locationManager.StopMonitoring(native);
+            }
         }
 
 
@@ -152,7 +162,9 @@ namespace Plugin.Geofencing
 
             var region = this.FromNative(native);
             this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(region, status));
-            // TODO: 1 time use delete
+            var kill = this.KillIfSingleUse(region.Identifier);
+            if (kill)
+                this.StopMonitoring(region);
         }
 
 
@@ -182,6 +194,26 @@ namespace Plugin.Geofencing
                 default:
                     return GeofenceStatus.Unknown;
             }
+        }
+
+
+        NSString ToSuKey(string identifier) => new NSString(identifier + "_su");
+
+        protected virtual bool KillIfSingleUse(string identifier)
+        {
+            var key = this.ToSuKey(identifier);
+            var exists = NSUserDefaults.StandardUserDefaults.ValueForKey(key) != null;
+            if (exists)
+                NSUserDefaults.StandardUserDefaults.RemoveObject(key);
+
+            return exists;
+        }
+
+
+        protected virtual void SetIfSingleUse(GeofenceRegion region)
+        {
+            if (region.SingleUse)
+                NSUserDefaults.StandardUserDefaults.SetValueForKey(new NSString("set"), this.ToSuKey(region.Identifier));
         }
 
 

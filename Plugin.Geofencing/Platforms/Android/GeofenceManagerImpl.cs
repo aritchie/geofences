@@ -11,10 +11,6 @@ using Plugin.Geofencing.Platforms.Android;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 
-[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
-[assembly: UsesFeature("android.hardware.location.gps")]
-[assembly: UsesFeature("android.hardware.location.network")]
-
 
 namespace Plugin.Geofencing
 {
@@ -125,7 +121,7 @@ namespace Plugin.Geofencing
         }
 
 
-        public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null)
+        public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken)
         {
             if (!this.current.ContainsKey(region.Identifier))
                 return Task.FromResult(GeofenceStatus.Unknown);

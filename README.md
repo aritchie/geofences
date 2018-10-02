@@ -6,7 +6,6 @@ A cross platform library for Xamarin & Windows that allows for easy geofence det
 
 |Platform|Version|
 | ------------------- |:------------------: |
-|.NET Standard|v1 & 2|
 |Xamarin.iOS|iOS 6+|
 |Xamarin.Android|API 10+|
 |Windows 10 UWP|10+|
@@ -16,6 +15,7 @@ A cross platform library for Xamarin & Windows that allows for easy geofence det
 Be sure to install the Plugin.Geofencing nuget package in all of your main platform projects as well as your core/NETStandard project
 
 [![NuGet](https://img.shields.io/nuget/v/Plugin.Geofencing.svg?maxAge=2592000)](https://www.nuget.org/packages/Plugin.Geofencing/)
+[Change Log - October 2, 2018](changelog.md)
 
 **Android**
 

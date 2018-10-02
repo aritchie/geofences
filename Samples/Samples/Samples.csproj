@@ -1,27 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Samples</RootNamespace>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>Samples</RootNamespace>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Acr.Core" Version="2.2.1" />
-    <PackageReference Include="Acr.UserDialogs" Version="7.0.1" />
-    <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
-    <PackageReference Include="ReactiveUI" Version="8.7.2" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
-    <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Acr.Core" Version="2.2.1" />
+        <PackageReference Include="Acr.UserDialogs" Version="7.0.1" />
+        <PackageReference Include="Prism.Autofac.Forms" Version="7.0.0.396" />
+        <PackageReference Include="ReactiveUI" Version="8.7.2" />
+        <PackageReference Include="ReactiveUI.Fody" Version="8.7.2" />
+        <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
+        <PackageReference Include="Xamarin.Essentials" Version="0.10.0-preview" />
+        <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Plugin.Geofencing\Plugin.Geofencing.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Plugin.Geofencing\Plugin.Geofencing.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="MainPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+
 
 </Project>

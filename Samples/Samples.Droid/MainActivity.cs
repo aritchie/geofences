@@ -3,6 +3,7 @@ using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Plugin.CurrentActivity;
 using Plugin.Permissions;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
@@ -27,6 +28,8 @@ namespace Samples.Droid
 
             UserDialogs.Init(() => (Activity)Forms.Context);
             Forms.Init(this, bundle);
+            Xamarin.Essentials.Platform.Init(this, bundle);
+            CrossCurrentActivity.Current.Init(this, bundle);
             this.LoadApplication(new App());
         }
 

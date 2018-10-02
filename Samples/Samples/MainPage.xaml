@@ -1,35 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:samples="clr-namespace:Samples;assembly=Samples"
-             x:Class="Samples.MainPage">
-
-    <TabbedPage.BindingContext>
-        <samples:MainViewModel />
-    </TabbedPage.BindingContext>
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            x:Class="Samples.MainPage"
+            Title="Geofence Plugin">
 
     <TabbedPage.Children>
         <ContentPage Title="Geofences">
-            <StackLayout>
-                <Label Text="No Geofences Configured">
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="False">
-                            <Setter Property="IsVisible" Value="True" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="True">
-                            <Setter Property="IsVisible" Value="False" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                </Label>
+            <ContentPage.Content>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                <ListView ItemsSource="{Binding Geofences}" IsVisible="{Binding HasGeofences}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextCell Text="{Binding Text}" Detail="{Binding Detail}" />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
+                    <Label Text="No Geofences Configured" Grid.Row="0">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="False">
+                                <Setter Property="IsVisible" Value="True" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="True">
+                                <Setter Property="IsVisible" Value="False" />
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+
+                    <ListView ItemsSource="{Binding Geofences}"
+                              IsVisible="{Binding HasGeofences}"
+                              Grid.Row="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextCell Text="{Binding Text}" Detail="{Binding Detail}">
+                                    <TextCell.ContextActions>
+                                        <MenuItem Text="Get Status"
+                                                  Command="{Binding RequestCurrentState}" />
+
+                                        <MenuItem Text="Remove"
+                                                  IsDestructive="True"
+                                                  Command="{Binding Remove}"/>
+                                    </TextCell.ContextActions>
+                                </TextCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Button Text="Stop All Geofences"
+                            Command="{Binding DropAllFences}"
+                            Grid.Row="1" />
+                </Grid>
+            </ContentPage.Content>
         </ContentPage>
 
         <ContentPage Title="Events">
@@ -55,21 +73,41 @@
         </ContentPage>
 
         <ContentPage Title="Add Geofence">
-            <StackLayout>
-                <Label Text="Name" />
-                <Entry Text="{Binding Identifier}" Keyboard="Text" />
+            <TableView Intent="Form">
+                <TableSection>
+                    <EntryCell Label="Identifier"
+                               Text="{Binding Identifier}"
+                               Keyboard="Text" />
 
-                <Label Text="Latitude" />
-                <Entry Text="{Binding CenterLatitude}" Keyboard="Numeric" />
+                    <EntryCell Label="Latitude"
+                               Text="{Binding CenterLatitude}"
+                               Keyboard="Numeric" />
 
-                <Label Text="Longitude" />
-                <Entry Text="{Binding CenterLongitude}" Keyboard="Numeric" />
+                    <EntryCell Label="Longitude"
+                               Text="{Binding CenterLongitude}"
+                               Keyboard="Numeric" />
 
-                <Label Text="Radius (m)" />
-                <Entry Text="{Binding RadiusMeters}" Keyboard="Numeric" />
+                    <EntryCell Label="Radius (meters)"
+                               Text="{Binding RadiusMeters}"
+                               Keyboard="Numeric" />
+                </TableSection>
 
-                <Button Text="Create Geofence" Command="{Binding CreateGeofence}" />
-            </StackLayout>
+                <TableSection>
+                    <SwitchCell Text="Notify On Entry" On="{Binding NotifyOnEntry}" />
+                    <SwitchCell Text="Notify On Exit" On="{Binding NotifyOnExit}" />
+                    <SwitchCell Text="Single Use" On="{Binding SingleUse}" />
+                </TableSection>
+
+                <TableSection>
+                    <TextCell Text="Set Current Position" Command="{Binding SetCurrentLocation}" />
+                    <TextCell Text="Create Geofence" Command="{Binding CreateGeofence}" />
+                </TableSection>
+
+                <TableSection Title="Quick Entries">
+                    <TextCell Text="Apple HQ" Command="{Binding AddAppleHQ}" />
+                    <TextCell Text="CN Tower, Toronto, Canada" Command="{Binding AddCnTower}" />
+                </TableSection>
+            </TableView>
         </ContentPage>
 
     </TabbedPage.Children>

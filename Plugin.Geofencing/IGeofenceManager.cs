@@ -48,7 +48,7 @@ namespace Plugin.Geofencing
         /// <param name="region"></param>
         /// <param name="cancelToken"></param>
         /// <returns>Status of geofence</returns>
-        Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null);
+        Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken = default(CancellationToken));
 
         /// <summary>
         /// The geofence event

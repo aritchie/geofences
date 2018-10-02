@@ -3,6 +3,8 @@
 ## 3.0
 Multitarged client
 [feature] Android now uses google play API
+[feature] Ability to notify on entry and/or exit
+[feature] Single use geofence event triggers
 
 ## 2.0
 [feature] netstandard is here

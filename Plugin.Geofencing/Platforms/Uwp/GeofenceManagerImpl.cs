@@ -104,11 +104,21 @@ namespace Plugin.Geofencing
         public void StopAllMonitoring() => GeofenceMonitor.Current.Geofences.Clear();
 
 
-        public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken? cancelToken = null)
+        public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken)
         {
-            // TODO
-            throw new NotImplementedException();
+            var native = GeofenceMonitor.Current;
+            var coords = native.LastKnownGeoposition?.Coordinate?.Point?.Position;
+            if (coords == null)
+                return Task.FromResult(GeofenceStatus.Unknown);
+
+            var position = new Position(coords.Value.Latitude, coords.Value.Longitude);
+            var result = region.IsPositionInside(position)
+                ? GeofenceStatus.Entered
+                : GeofenceStatus.Exited;
+
+            return Task.FromResult(result);
         }
+
 
         public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
 
