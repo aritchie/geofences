@@ -70,20 +70,3 @@ Add location to your app manifest capabilities section
     or
 
     CrossGeofences.Current.StopAllMonitoring();
-
-
-### FAQ
-
-* Q) Why create another geofence plugin
-
-  A) I felt like the integration or bloat in other geofence libraries (stay, notifications, etc). I also didn't like that Google Play Services were required in Android which required your device to be online when creating the geofences.  This did not work with my requirements
-
-* Q) Why use a cross platform GPS library for Android?
-  
-  A) James has done a ton of work around the Android geolocation mess.  I didn't want to duplicate this.  I just wanted to attach to an event and set the desired accuracy
-
-* Q) Yes, but what about google play services?
-
-  A) The amount of code necessary to register a geofence as well as all of the junk that came with it made it annoying and no less of a drain on the battery
-
-
