@@ -1,8 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:xamForms="clr-namespace:Acr.XamForms;assembly=Acr.XamForms"
             x:Class="Samples.MainPage"
             Title="Geofence Plugin">
+
+    <TabbedPage.Resources>
+        <ResourceDictionary>
+            <xamForms:InverseBooleanConverter x:Key="Not" />
+        </ResourceDictionary>
+    </TabbedPage.Resources>
 
     <TabbedPage.Children>
         <ContentPage Title="Geofences">
@@ -13,16 +20,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Label Text="No Geofences Configured" Grid.Row="0">
-                        <Label.Triggers>
-                            <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="False">
-                                <Setter Property="IsVisible" Value="True" />
-                            </DataTrigger>
-                            <DataTrigger TargetType="Label" Binding="{Binding HasGeofences}" Value="True">
-                                <Setter Property="IsVisible" Value="False" />
-                            </DataTrigger>
-                        </Label.Triggers>
-                    </Label>
+                    <Label Text="No Geofences Configured" IsVisible="{Binding HasGeofences, Converter={StaticResource Not}}" Grid.Row="0" />
 
                     <ListView ItemsSource="{Binding Geofences}"
                               IsVisible="{Binding HasGeofences}"
