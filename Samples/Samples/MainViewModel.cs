@@ -76,11 +76,11 @@ namespace Samples
                             return false;
 
                         var latv = lat.GetValue();
-                        if (latv > 89.9 || latv < -89.9)
+                        if (latv >= 89.9 || latv <= -89.9)
                             return false;
 
                         var lngv = lng.GetValue();
-                        if (lngv > 179.9 || lngv < -179.9)
+                        if (lngv >= 179.9 || lngv <= -179.9)
                             return false;
 
                         if (!entry.GetValue() && !exit.GetValue())
