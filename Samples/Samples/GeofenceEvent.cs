@@ -7,6 +7,7 @@ namespace Samples
     public class GeofenceEvent
     {
         [PrimaryKey]
+        [AutoIncrement]
         public int Id { get; set; }
 
         public bool Entered { get; set; }
