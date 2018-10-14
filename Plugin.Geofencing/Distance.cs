@@ -15,78 +15,30 @@ namespace Plugin.Geofencing
         public double TotalKilometers { get; set; }
 
 
-        public override string ToString()
+        public override string ToString() => $"[Distance: {this.TotalKilometers}]";
+        public bool Equals(Distance other) => (this.TotalKilometers) == (other.TotalKilometers);
+        public override bool Equals(object obj) => obj is Distance distance && this.Equals(distance);
+        public override int GetHashCode() => (this.TotalKilometers).GetHashCode();
+
+        public static bool operator ==(Distance left, Distance right) => Equals(left, right);
+        public static bool operator !=(Distance left, Distance right) => !Equals(left, right);
+        public static bool operator >(Distance x, Distance y) => x.TotalKilometers > y.TotalKilometers;
+        public static bool operator <(Distance x, Distance y) => x.TotalKilometers < y.TotalKilometers;
+        public static bool operator >=(Distance x, Distance y) => x.TotalKilometers >= y.TotalKilometers;
+        public static bool operator <=(Distance x, Distance y) => x.TotalKilometers <= y.TotalKilometers;
+
+
+        public static Distance FromMiles(int miles) => new Distance
         {
-            return $"{this.TotalKilometers} KM";
-        }
-
-
-        public override bool Equals(object obj)
+            TotalKilometers = miles * MILES_TO_KM
+        };
+        public static Distance FromMeters(double meters) => new Distance
         {
-            var other = obj as Distance;
-            if (other == null)
-                return false;
-
-            if (this.TotalKilometers.Equals(other.TotalKilometers))
-                return false;
-
-            return false;
-        }
-
-        public override int GetHashCode()
+            TotalKilometers = meters / KM_TO_METERS
+        };
+        public static Distance FromKilometers(double km) => new Distance
         {
-            return this.TotalKilometers.GetHashCode();
-        }
-
-
-        public static Distance FromMiles(int miles)
-        {
-            return new Distance
-            {
-                TotalKilometers = miles * MILES_TO_KM
-            };
-        }
-
-
-        public static Distance FromMeters(double meters)
-        {
-            return new Distance
-            {
-                TotalKilometers = meters / KM_TO_METERS
-            };
-        }
-
-
-        public static Distance FromKilometers(double km)
-        {
-            return new Distance
-            {
-                TotalKilometers = km
-            };
-        }
-
-
-        public static bool operator ==(Distance x, Distance y)
-        {
-            return x.TotalKilometers == y.TotalKilometers;
-        }
-
-
-        public static bool operator !=(Distance x, Distance y)
-        {
-            return x.TotalKilometers != y.TotalKilometers;
-        }
-
-
-        public static bool operator >(Distance x, Distance y)
-        {
-            return x.TotalKilometers > y.TotalKilometers;
-        }
-
-
-        public static bool operator <(Distance x, Distance y)
-        {
-            return x.TotalKilometers < y.TotalKilometers;
-        }
+            TotalKilometers = km
+        };
     }
 }

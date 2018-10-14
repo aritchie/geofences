@@ -56,5 +56,10 @@ namespace Plugin.Geofencing
 
 
         public override string ToString() => $"Latitude: {this.Latitude} - Longitude: {this.Longitude}";
+        public bool Equals(Position other) => (this.Latitude, this.Longitude) == (other.Latitude, other.Longitude);
+        public static bool operator ==(Position left, Position right) => Equals(left, right);
+        public static bool operator !=(Position left, Position right) => !Equals(left, right);
+        public override bool Equals(object obj) => obj is Position pos && this.Equals(pos);
+        public override int GetHashCode() => (this.Latitude, this.Longitude).GetHashCode();
     }
 }

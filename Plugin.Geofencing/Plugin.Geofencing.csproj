@@ -5,6 +5,7 @@
         <AssemblyName>Plugin.Geofencing</AssemblyName>
         <RootNamespace>Plugin.Geofencing</RootNamespace>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <LangVersion>latest</LangVersion>
         <Version>3.0.0-beta3</Version>
         <Authors>aritchie</Authors>
         <Company />
