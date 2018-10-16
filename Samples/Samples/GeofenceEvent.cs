@@ -16,6 +16,8 @@ namespace Samples
 
 
         public string Text => this.Identifier;
-        public string Detail => this.Entered ? "Entered " : "Exited " + $"on {this.Date:MMM d a\t h:mm tt}";
+        public string Detail => this.Entered
+            ? $"Entered on {this.Date:MMM d a\t h:mm tt}"
+            : $"Exited on {this.Date:MMM d a\t h:mm tt}";
     }
 }
