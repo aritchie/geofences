@@ -44,6 +44,7 @@
         <Compile Remove="Platforms\**\*.cs" />
         <None Include="Platforms\**\*.cs" />
         <PackageReference Include="Plugin.Permissions" Version="3.0.0.12" />
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63127-02" PrivateAssets="All" />
     </ItemGroup>
 
