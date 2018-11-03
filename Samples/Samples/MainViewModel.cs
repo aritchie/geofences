@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using Plugin.Geofencing;
-using Plugin.Permissions.Abstractions;
 using Prism.AppModel;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -36,7 +34,9 @@ namespace Samples
             {
                 var pos = await Geolocation.GetLastKnownLocationAsync();
                 if (pos == null)
+                {
                     this.dialogs.Alert("Could not get current position");
+                }
                 else
                 {
                     this.Identifier = $"{pos.Latitude}_{pos.Longitude}";
@@ -97,7 +97,7 @@ namespace Samples
                     var confirm = await this.dialogs.ConfirmAsync("Are you sure you wish to drop all geofences?");
                     if (confirm)
                     {
-                        this.geofenceManager.StopAllMonitoring();
+                        await this.geofenceManager.StopAllMonitoring();
                         this.LoadRegions();
                     }
                 },
@@ -172,26 +172,18 @@ namespace Samples
 
         async Task AddGeofence(string id, double lat, double lng, double distance)
         {
-            var permission = await this.geofenceManager.RequestPermission();
-            if (permission == PermissionStatus.Granted)
+            await this.geofenceManager.StartMonitoring(new GeofenceRegion(
+                id,
+                new Position(lat, lng),
+                Distance.FromMeters(distance)
+            )
             {
-                this.geofenceManager.StartMonitoring(new GeofenceRegion(
-                    id,
-                    new Position(lat, lng),
-                    Distance.FromMeters(distance)
-                )
-                {
-                    NotifyOnEntry = this.NotifyOnEntry,
-                    NotifyOnExit = this.NotifyOnExit,
-                    SingleUse = this.SingleUse
-                });
-                this.dialogs.Toast($"Geofence {id} Created");
-                this.LoadRegions();
-            }
-            else
-            {
-                this.dialogs.Alert("Error getting geofence permission - " + permission);
-            }
+                NotifyOnEntry = this.NotifyOnEntry,
+                NotifyOnExit = this.NotifyOnExit,
+                SingleUse = this.SingleUse
+            });
+            this.dialogs.Toast($"Geofence {id} Created");
+            this.LoadRegions();
         }
 
         void LoadEvents()
@@ -218,7 +210,7 @@ namespace Samples
                         var confirm = await this.dialogs.ConfirmAsync("Are you sure you wish to remove geofence - " + region.Identifier);
                         if (confirm)
                         {
-                            this.geofenceManager.StopMonitoring(region);
+                            await this.geofenceManager.StopMonitoring(region);
                             this.LoadRegions();
                         }
                     }),
