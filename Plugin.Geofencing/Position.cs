@@ -5,40 +5,21 @@ namespace Plugin.Geofencing
 {
     public class Position
     {
-        public Position() { }
         public Position(double lat, double lng)
         {
+            if (lat < -90 || lat > 90)
+                throw new ArgumentException($"Invalid latitude value - {lat}");
+
+            if (lng < -180 || lng > 180)
+                throw new ArgumentException($"Invalid longitude value - {lng}");
+
             this.Latitude = lat;
             this.Longitude = lng;
         }
 
 
-        double latitude;
-        public double Latitude
-        {
-            get => this.latitude;
-            set
-            {
-                if (value < -90 || value > 90)
-                    throw new ArgumentException($"Invalid latitude value - {value}");
-
-                this.latitude = value;
-            }
-        }
-
-
-        double longitude;
-        public double Longitude
-        {
-            get => this.longitude;
-            set
-            {
-                if (value < -180 || value > 180)
-                    throw new ArgumentException($"Invalid longitude value - {value}");
-
-                this.longitude = value;
-            }
-        }
+        public double Latitude { get; }
+        public double Longitude { get; }
 
 
         public Distance GetDistanceTo(Position other)
