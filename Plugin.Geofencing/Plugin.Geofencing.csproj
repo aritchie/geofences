@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.52">
+﻿<Project Sdk="MSBuild.Sdk.Extras/1.6.60">
 
     <PropertyGroup>
         <TargetFrameworks>netstandard2.0;MonoAndroid80;Xamarin.iOS10;uap10.0</TargetFrameworks>
