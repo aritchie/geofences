@@ -3,7 +3,7 @@
 
 namespace Plugin.Geofencing
 {
-    public enum GeofenceStatus
+    public enum GeofenceState
     {
         Unknown = 0,
         Entered = 1,

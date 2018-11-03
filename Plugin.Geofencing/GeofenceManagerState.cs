@@ -1,8 +1,9 @@
 ﻿using System;
 
+
 namespace Plugin.Geofencing
 {
-    public enum GeofenceManagerStatus
+    public enum GeofenceManagerState
     {
         Unknown,
         Ready,

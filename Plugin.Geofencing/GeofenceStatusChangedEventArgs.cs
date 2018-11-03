@@ -5,7 +5,7 @@ namespace Plugin.Geofencing
 {
     public class GeofenceStatusChangedEventArgs : EventArgs
     {
-        public GeofenceStatusChangedEventArgs(GeofenceRegion region, GeofenceStatus status)
+        public GeofenceStatusChangedEventArgs(GeofenceRegion region, GeofenceState status)
         {
             this.Region = region;
             this.Status = status;
@@ -13,6 +13,6 @@ namespace Plugin.Geofencing
 
 
         public GeofenceRegion Region { get; }
-        public GeofenceStatus Status { get; }
+        public GeofenceState Status { get; }
     }
 }

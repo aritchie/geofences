@@ -224,7 +224,7 @@ namespace Samples
                     }),
                     RequestCurrentState = ReactiveCommand.CreateFromTask(async _ =>
                     {
-                        GeofenceStatus? status = null;
+                        GeofenceState? status = null;
                         using (var cancelSrc = new CancellationTokenSource())
                         {
                             using (this.dialogs.Loading("Requesting State for " + region.Identifier, cancelSrc.Cancel))

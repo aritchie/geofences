@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 
 namespace Plugin.Geofencing
 {
     public static class Extensions
     {
-        public static void StopMonitoring(this IGeofenceManager geofenceMgr, string identifier)
+        public static async Task StopMonitoring(this IGeofenceManager geofenceMgr, string identifier)
         {
             foreach (var region in geofenceMgr.MonitoredRegions)
             {
                 if (region.Identifier.ToLower().Equals(identifier.ToLower()))
                 {
-                    geofenceMgr.StopMonitoring(region);
+                    await geofenceMgr.StopMonitoring(region);
                     break;
                 }
             }

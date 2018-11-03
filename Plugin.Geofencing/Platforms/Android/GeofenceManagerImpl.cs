@@ -8,14 +8,12 @@ using Android.Content;
 using Android.Gms.Extensions;
 using Android.Gms.Location;
 using Plugin.Geofencing.Platforms.Android;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
 
 
 namespace Plugin.Geofencing
 {
     //https://developer.android.com/training/location/geofencing.html#java
-    public class GeofenceManagerImpl : IGeofenceManager //Java.Lang.Object, IOnSuccessListener, IOnFailureListener
+    public class GeofenceManagerImpl : AbstractGeofenceManager //Java.Lang.Object, IOnSuccessListener, IOnFailureListener
     {
         readonly PluginSqliteConnection conn;
         readonly GeofencingClient client;
@@ -34,24 +32,10 @@ namespace Plugin.Geofencing
         }
 
 
-        public GeofenceManagerStatus Status => GeofenceManagerStatus.Ready;
+        public override GeofenceManagerState Status => GeofenceManagerState.Ready;
 
 
-        public async Task<PermissionStatus> RequestPermission()
-        {
-            var result = await CrossPermissions
-                .Current
-                .RequestPermissionsAsync(Permission.LocationAlways)
-                .ConfigureAwait(false);
-
-            if (!result.ContainsKey(Permission.LocationAlways))
-                return PermissionStatus.Unknown;
-
-            return result[Permission.LocationAlways];
-        }
-
-
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions => this.current.Values
+        public override IReadOnlyList<GeofenceRegion> MonitoredRegions => this.current.Values
             .Select(x => new GeofenceRegion(
                 x.Identifier,
                 new Position(x.CenterGpsLatitude, x.CenterGpsLongitude),
@@ -60,8 +44,10 @@ namespace Plugin.Geofencing
             .ToList();
 
 
-        public async void StartMonitoring(GeofenceRegion region)
+        public override async Task StartMonitoring(GeofenceRegion region)
         {
+            await this.AssertPermission();
+
             var transitions = this.GetTransitions(region);
             var geofence = new GeofenceBuilder()
                 .SetRequestId(region.Identifier)
@@ -100,9 +86,9 @@ namespace Plugin.Geofencing
         }
 
 
-        public void StopMonitoring(GeofenceRegion region)
+        public override async Task StopMonitoring(GeofenceRegion region)
         {
-            this.client.RemoveGeofences(new List<string> { region.Identifier });
+            await this.client.RemoveGeofences(new List<string> { region.Identifier });
 
             this.current.Remove(region.Identifier);
             this.conn.Delete<DbGeofenceRegion>(region.Identifier);
@@ -112,7 +98,7 @@ namespace Plugin.Geofencing
         }
 
 
-        public async void StopAllMonitoring()
+        public override async Task StopAllMonitoring()
         {
             this.conn.DeleteAll<DbGeofenceRegion>();
             await this.client.RemoveGeofences(this.current.Keys.ToList());
@@ -121,24 +107,20 @@ namespace Plugin.Geofencing
         }
 
 
-        public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken)
+        public override async Task<GeofenceState> RequestState(GeofenceRegion region, CancellationToken cancelToken)
         {
-            if (!this.current.ContainsKey(region.Identifier))
-                return Task.FromResult(GeofenceStatus.Unknown);
+            await this.AssertPermission();
 
-            var result = (GeofenceStatus)this.current[region.Identifier].CurrentStatus;
-            return Task.FromResult(result);
+            if (!this.current.ContainsKey(region.Identifier))
+                return GeofenceState.Unknown;
+
+            var result = (GeofenceState)this.current[region.Identifier].CurrentStatus;
+            return result;
         }
 
 
-        public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
-
-
-        protected virtual void OnRegionStatusChanged(DbGeofenceRegion region, GeofenceStatus status)
+        protected virtual void OnDbRegionStatusChanged(DbGeofenceRegion region, GeofenceState status)
         {
-            if (this.RegionStatusChanged == null)
-                return;
-
             var wrap = new GeofenceRegion(
                 region.Identifier,
                 new Position(region.CenterGpsLatitude, region.CenterGpsLongitude),
@@ -148,7 +130,7 @@ namespace Plugin.Geofencing
                 NotifyOnEntry = region.NotifyOnEntry,
                 NotifyOnExit = region.NotifyOnExit
             };
-            this.RegionStatusChanged.Invoke(this, new GeofenceStatusChangedEventArgs(wrap, status));
+            this.OnGeofenceStatusChanged(wrap, status);
         }
 
 
@@ -185,8 +167,8 @@ namespace Plugin.Geofencing
         internal void TryFireEvent(GeofencingEvent @event)
         {
             var status = @event.GeofenceTransition == Geofence.GeofenceTransitionEnter
-                ? GeofenceStatus.Entered
-                : GeofenceStatus.Exited;
+                ? GeofenceState.Entered
+                : GeofenceState.Exited;
 
             foreach (var native in @event.TriggeringGeofences)
             {
@@ -196,7 +178,7 @@ namespace Plugin.Geofencing
                     wrap.CurrentStatus = (int)status;
                     this.conn.Update(wrap);
 
-                    this.OnRegionStatusChanged(wrap, status);
+                    this.OnDbRegionStatusChanged(wrap, status);
                 }
             }
         }

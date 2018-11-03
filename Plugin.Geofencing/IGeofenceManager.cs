@@ -12,7 +12,7 @@ namespace Plugin.Geofencing
         /// <summary>
         /// Geofencing Status
         /// </summary>
-        GeofenceManagerStatus Status { get; }
+        GeofenceManagerState Status { get; }
 
         /// <summary>
         /// Requests permission to use location services
@@ -29,18 +29,18 @@ namespace Plugin.Geofencing
         /// Start monitoring a geofence
         /// </summary>
         /// <param name="region"></param>
-        void StartMonitoring(GeofenceRegion region);
+        Task StartMonitoring(GeofenceRegion region);
 
         /// <summary>
         /// Stop monitoring a geofence
         /// </summary>
         /// <param name="region"></param>
-        void StopMonitoring(GeofenceRegion region);
+        Task StopMonitoring(GeofenceRegion region);
 
         /// <summary>
         /// Stop monitoring all active geofences
         /// </summary>
-        void StopAllMonitoring();
+        Task StopAllMonitoring();
 
         /// <summary>
         /// This will request the current status of a geofence region
@@ -48,7 +48,7 @@ namespace Plugin.Geofencing
         /// <param name="region"></param>
         /// <param name="cancelToken"></param>
         /// <returns>Status of geofence</returns>
-        Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken = default(CancellationToken));
+        Task<GeofenceState> RequestState(GeofenceRegion region, CancellationToken cancelToken = default(CancellationToken));
 
         /// <summary>
         /// The geofence event

@@ -5,22 +5,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Geolocation.Geofencing;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
 
 
 namespace Plugin.Geofencing
 {
     //https://docs.microsoft.com/en-us/windows/uwp/maps-and-location/set-up-a-geofence
-    public class GeofenceManagerImpl : IGeofenceManager
+    public class GeofenceManagerImpl : AbstractGeofenceManager
     {
         public GeofenceManagerImpl()
         {
             GeofenceMonitor.Current.GeofenceStateChanged += (sender, args) =>
             {
-                if (this.RegionStatusChanged == null)
-                    return;
-
                 var changes = GeofenceMonitor
                     .Current
                     .ReadReports()
@@ -30,48 +25,35 @@ namespace Plugin.Geofencing
                 {
                     var state = this.FromNative(change.NewState);
                     var region = this.FromNative(change.Geofence);
-                    this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(region, state));
+                    this.OnGeofenceStatusChanged(region, state);
                 }
             };
         }
 
 
-        public GeofenceManagerStatus Status
+        public override GeofenceManagerState Status
         {
             get
             {
                 switch (GeofenceMonitor.Current.Status)
                 {
                     case GeofenceMonitorStatus.Ready:
-                        return GeofenceManagerStatus.Ready;
+                        return GeofenceManagerState.Ready;
 
                     case GeofenceMonitorStatus.Disabled:
-                        return GeofenceManagerStatus.Disabled;
+                        return GeofenceManagerState.Disabled;
 
                     case GeofenceMonitorStatus.NotAvailable:
-                        return GeofenceManagerStatus.NotSupported;
+                        return GeofenceManagerState.NotSupported;
 
                     default:
-                        return GeofenceManagerStatus.Unknown;
+                        return GeofenceManagerState.Unknown;
                 }
             }
         }
 
-        public async Task<PermissionStatus> RequestPermission()
-        {
-            var result = await CrossPermissions
-                .Current
-                .RequestPermissionsAsync(Permission.LocationAlways)
-                .ConfigureAwait(false);
 
-            if (!result.ContainsKey(Permission.LocationAlways))
-                return PermissionStatus.Unknown;
-
-            return result[Permission.LocationAlways];
-        }
-
-
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions => GeofenceMonitor
+        public override IReadOnlyList<GeofenceRegion> MonitoredRegions => GeofenceMonitor
             .Current
             .Geofences
             .Where(x => x.Geoshape is Geocircle)
@@ -82,15 +64,15 @@ namespace Plugin.Geofencing
         //<!-- DeviceCapability elements must follow Capability elements(if present) -->
         //<DeviceCapability Name = "location" />
         //    </ Capabilities >
-        public void StartMonitoring(GeofenceRegion region)
+        public override async Task StartMonitoring(GeofenceRegion region)
         {
-            //var accessStatus = await Geolocator.RequestAccessAsync();
+            await this.AssertPermission();
             var native = this.ToNative(region);
             GeofenceMonitor.Current.Geofences.Add(native);
         }
 
 
-        public void StopMonitoring(GeofenceRegion region)
+        public override Task StopMonitoring(GeofenceRegion region)
         {
             // TODO: strong guess - this thing isn't thread safe
             var list = GeofenceMonitor.Current.Geofences;
@@ -98,43 +80,48 @@ namespace Plugin.Geofencing
 
             if (geofence != null)
                 list.Remove(geofence);
+
+            return Task.CompletedTask;
         }
 
 
-        public void StopAllMonitoring() => GeofenceMonitor.Current.Geofences.Clear();
-
-
-        public Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken)
+        public override Task StopAllMonitoring()
         {
+            GeofenceMonitor.Current.Geofences.Clear();
+            return Task.CompletedTask;
+        }
+
+
+        public override async Task<GeofenceState> RequestState(GeofenceRegion region, CancellationToken cancelToken)
+        {
+            await this.AssertPermission();
+
             var native = GeofenceMonitor.Current;
             var coords = native.LastKnownGeoposition?.Coordinate?.Point?.Position;
             if (coords == null)
-                return Task.FromResult(GeofenceStatus.Unknown);
+                return GeofenceState.Unknown;
 
             var position = new Position(coords.Value.Latitude, coords.Value.Longitude);
             var result = region.IsPositionInside(position)
-                ? GeofenceStatus.Entered
-                : GeofenceStatus.Exited;
+                ? GeofenceState.Entered
+                : GeofenceState.Exited;
 
-            return Task.FromResult(result);
+            return result;
         }
 
 
-        public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
-
-
-        GeofenceStatus FromNative(GeofenceState state)
+        GeofenceState FromNative(Windows.Devices.Geolocation.Geofencing.GeofenceState state)
         {
             switch (state)
             {
-                case GeofenceState.Entered:
-                    return GeofenceStatus.Entered;
+                case Windows.Devices.Geolocation.Geofencing.GeofenceState.Entered:
+                    return GeofenceState.Entered;
 
-                case GeofenceState.Exited:
-                    return GeofenceStatus.Exited;
+                case Windows.Devices.Geolocation.Geofencing.GeofenceState.Exited:
+                    return GeofenceState.Exited;
 
                 default:
-                    return GeofenceStatus.Unknown;
+                    return GeofenceState.Unknown;
             }
         }
 

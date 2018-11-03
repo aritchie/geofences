@@ -7,61 +7,45 @@ using System.Threading;
 using System.Threading.Tasks;
 using CoreLocation;
 using Foundation;
-using Plugin.Permissions;
-using Plugin.Permissions.Abstractions;
 using UIKit;
 
 
 namespace Plugin.Geofencing
 {
-
-    public class GeofenceManagerImpl : IGeofenceManager
+    public class GeofenceManagerImpl : AbstractGeofenceManager
     {
         readonly CLLocationManager locationManager;
 
         public GeofenceManagerImpl()
         {
             this.locationManager = new CLLocationManager();
-            this.locationManager.RegionEntered += (sender, args) => this.DoBroadcast(args, GeofenceStatus.Entered);
-            this.locationManager.RegionLeft += (sender, args) => this.DoBroadcast(args, GeofenceStatus.Exited);
+            this.locationManager.RegionEntered += (sender, args) => this.DoBroadcast(args, GeofenceState.Entered);
+            this.locationManager.RegionLeft += (sender, args) => this.DoBroadcast(args, GeofenceState.Exited);
         }
 
 
-        public GeofenceManagerStatus Status
+        public override GeofenceManagerState Status
         {
             get
             {
                 if (!CLLocationManager.LocationServicesEnabled)
-                    return GeofenceManagerStatus.Disabled;
+                    return GeofenceManagerState.Disabled;
 
                 if (!CLLocationManager.IsMonitoringAvailable(typeof(CLCircularRegion)))
-                    return GeofenceManagerStatus.Disabled;
+                    return GeofenceManagerState.Disabled;
 
                 if (CLLocationManager.Status != CLAuthorizationStatus.AuthorizedAlways)
-                    return GeofenceManagerStatus.PermissionDenied;
+                    return GeofenceManagerState.PermissionDenied;
 
-                return GeofenceManagerStatus.Ready;
+                return GeofenceManagerState.Ready;
             }
         }
 
 
-        public async Task<PermissionStatus> RequestPermission()
+        public override async Task<GeofenceState> RequestState(GeofenceRegion region, CancellationToken cancelToken)
         {
-            var result = await CrossPermissions
-                .Current
-                .RequestPermissionsAsync(Permission.LocationAlways)
-                .ConfigureAwait(false);
-
-            if (!result.ContainsKey(Permission.LocationAlways))
-                return PermissionStatus.Unknown;
-
-            return result[Permission.LocationAlways];
-        }
-
-
-        public async Task<GeofenceStatus> RequestState(GeofenceRegion region, CancellationToken cancelToken)
-        {
-            var tcs = new TaskCompletionSource<GeofenceStatus>();
+            await this.AssertPermission();
+            var tcs = new TaskCompletionSource<GeofenceState>();
 
             var handler = new EventHandler<CLRegionStateDeterminedEventArgs>((sender, args) =>
             {
@@ -90,10 +74,7 @@ namespace Plugin.Geofencing
         }
 
 
-        public event EventHandler<GeofenceStatusChangedEventArgs> RegionStatusChanged;
-
-
-        public IReadOnlyList<GeofenceRegion> MonitoredRegions
+        public override IReadOnlyList<GeofenceRegion> MonitoredRegions
         {
             get
             {
@@ -110,34 +91,40 @@ namespace Plugin.Geofencing
         }
 
 
-        public void StartMonitoring(GeofenceRegion region)
+        public override async Task StartMonitoring(GeofenceRegion region)
         {
+            await this.AssertPermission();
+
+            var tcs = new TaskCompletionSource<object>();
             //if !CLLocationManager.isMonitoringAvailableForClass(CLCircularRegion) {
-            UIApplication.SharedApplication.InvokeOnMainThread(() =>
+            UIApplication.SharedApplication.BeginInvokeOnMainThread(() =>
             {
                 try
                 {
                     var native = this.ToNative(region);
                     this.locationManager.StartMonitoring(native);
                     this.SetIfSingleUse(region);
+                    tcs.SetResult(null);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    tcs.SetException(ex);
                 }
             });
+            await tcs.Task.ConfigureAwait(false);
         }
 
 
-        public void StopMonitoring(GeofenceRegion region)
+        public override Task StopMonitoring(GeofenceRegion region)
         {
             var native = this.ToNative(region);
             this.KillIfSingleUse(region.Identifier);
             this.locationManager.StopMonitoring(native);
+            return Task.CompletedTask;
         }
 
 
-        public void StopAllMonitoring()
+        public override Task StopAllMonitoring()
         {
             var natives = this
                 .locationManager
@@ -150,10 +137,11 @@ namespace Plugin.Geofencing
                 this.KillIfSingleUse(native.Identifier);
                 this.locationManager.StopMonitoring(native);
             }
+            return Task.CompletedTask;
         }
 
 
-        protected virtual void DoBroadcast(CLRegionEventArgs args, GeofenceStatus status)
+        protected virtual void DoBroadcast(CLRegionEventArgs args, GeofenceState status)
         {
             Debug.WriteLine("Firing geofence region event");
             var native = args.Region as CLCircularRegion;
@@ -161,7 +149,7 @@ namespace Plugin.Geofencing
                 return;
 
             var region = this.FromNative(native);
-            this.RegionStatusChanged?.Invoke(this, new GeofenceStatusChangedEventArgs(region, status));
+            this.OnGeofenceStatusChanged(region, status);
             var kill = this.KillIfSingleUse(region.Identifier);
             if (kill)
                 this.StopMonitoring(region);
@@ -180,19 +168,19 @@ namespace Plugin.Geofencing
         }
 
 
-        protected virtual GeofenceStatus FromNative(CLRegionState state)
+        protected virtual GeofenceState FromNative(CLRegionState state)
         {
             switch (state)
             {
                 case CLRegionState.Inside:
-                    return GeofenceStatus.Entered;
+                    return GeofenceState.Entered;
 
                 case CLRegionState.Outside:
-                    return GeofenceStatus.Exited;
+                    return GeofenceState.Exited;
 
                 case CLRegionState.Unknown:
                 default:
-                    return GeofenceStatus.Unknown;
+                    return GeofenceState.Unknown;
             }
         }
 

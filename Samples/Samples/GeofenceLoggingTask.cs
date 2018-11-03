@@ -25,7 +25,7 @@ namespace Samples
                 this.geofences.RegionStatusChanged += (sender, args) => this.conn.Insert(new GeofenceEvent
                 {
                     Identifier = args.Region.Identifier,
-                    Entered = args.Status == GeofenceStatus.Entered,
+                    Entered = args.Status == GeofenceState.Entered,
                     Date = DateTime.Now
                 });
             }
