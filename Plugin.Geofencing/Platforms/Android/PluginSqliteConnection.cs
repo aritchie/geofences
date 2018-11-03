@@ -2,7 +2,7 @@
 using System.IO;
 using SQLite;
 
-namespace Plugin.Geofencing.Platforms.Android
+namespace Plugin.Geofencing
 {
     public class PluginSqliteConnection : SQLiteConnectionWithLock
     {
@@ -18,10 +18,9 @@ namespace Plugin.Geofencing.Platforms.Android
             SQLiteOpenFlags.Create | SQLiteOpenFlags.FullMutex | SQLiteOpenFlags.ReadWrite)
         {
             this.CreateTable<DbGeofenceRegion>();
-            this.GeofenceRegions = this.Table<DbGeofenceRegion>();
         }
 
 
-        public TableQuery<DbGeofenceRegion> GeofenceRegions { get; }
+        public TableQuery<DbGeofenceRegion> GeofenceRegions => this.Table<DbGeofenceRegion>();
     }
 }

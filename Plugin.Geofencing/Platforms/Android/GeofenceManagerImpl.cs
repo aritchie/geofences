@@ -7,7 +7,6 @@ using Android.App;
 using Android.Content;
 using Android.Gms.Extensions;
 using Android.Gms.Location;
-using Plugin.Geofencing.Platforms.Android;
 
 
 namespace Plugin.Geofencing
