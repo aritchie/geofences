@@ -1,4 +1,7 @@
-# ACR Geofence Plugin for Xamarin & Windows
+# UPDATE - This library has now moved to the Shiny Framework at https://github.com/shinyorg/shiny
+
+
+## ACR Geofence Plugin for Xamarin & Windows
 
 A cross platform library for Xamarin & Windows that allows for easy geofence detection
 
